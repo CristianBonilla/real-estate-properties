@@ -6,7 +6,7 @@ using RealEstateProperties.Infrastructure.Repositories.RealEstateProperties.Inte
 
 namespace RealEstateProperties.API.Modules
 {
-  class RepositoriesModule : Module
+  class GlobalRepositoriesModule : Module
   {
     protected override void Load(ContainerBuilder builder)
     {

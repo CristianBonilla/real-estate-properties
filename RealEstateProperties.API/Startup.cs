@@ -18,7 +18,9 @@ namespace RealEstateProperties.API
     public static void ConfigureContainer(ContainerBuilder builder)
     {
       builder.RegisterModule<DbModule>();
-      builder.RegisterModule<RepositoriesModule>();
+      builder.RegisterModule<GlobalRepositoriesModule>();
+      builder.RegisterModule<AuthModule>();
+      builder.RegisterModule<RealEstatePropertiesModule>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
