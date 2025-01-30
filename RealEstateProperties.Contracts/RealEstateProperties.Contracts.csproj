@@ -16,4 +16,8 @@
     <ProjectReference Include="..\RealEstateProperties.Domain.Entities\RealEstateProperties.Domain.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\" />
+  </ItemGroup>
+
 </Project>
