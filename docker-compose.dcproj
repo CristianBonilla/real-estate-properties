@@ -7,7 +7,8 @@
     <ProjectGuid>beac20c4-8229-43c6-8b33-19f863ac64b9</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>realestateproperties.api</DockerServiceName>
+    <DockerServiceName>real-estate-properties-api</DockerServiceName>
+    <DockerComposeProjectName>real-estate-properties</DockerComposeProjectName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

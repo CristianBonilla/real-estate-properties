@@ -1,14 +1,15 @@
-version: '3.4'
+version: '3.9'
 
 services:
-  realestateproperties.api:
+  real-estate-properties-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_URLS=https://+:977;http://+:731
+      - ASPNETCORE_HTTPS_PORTS=25091
+      - ASPNETCORE_HTTP_PORTS=22990
     ports:
-      - "8080"
-      - "8081"
+      - "25091:977"
+      - "22990:731"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

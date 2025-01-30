@@ -1,8 +1,36 @@
-version: '3.4'
+version: '3.9'
+
+networks:
+  real-estate-properties-network:
+  # default:
+  #   name: real-estate-properties-network
 
 services:
-  realestateproperties.api:
+  real-estate-properties-api:
     image: ${DOCKER_REGISTRY-}realestatepropertiesapi
+    container_name: real-estate-properties-API
     build:
       context: .
       dockerfile: RealEstateProperties.API/Dockerfile
+
+  real-estate-properties-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    container_name: real-estate-properties-DB
+    hostname: sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Express
+      - MSSQL_USER=sa
+      - MSSQL_SA_PASSWORD=RealEstateProperties__Password
+    ports:
+      - 17765:1433
+    expose:
+      - 17765
+    volumes:
+      - real-estate-properties-db:/var/opt/mssql
+    networks:
+      - real-estate-properties-network
+
+volumes:
+  real-estate-properties-db:

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "http": {
+    "RealEstateProperties.http": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -8,9 +8,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5137"
+      "applicationUrl": "http://localhost:7737"
     },
-    "https": {
+    "RealEstateProperties.https": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -18,7 +18,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7055;http://localhost:5137"
+      "applicationUrl": "https://localhost:7075;http://localhost:7737"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -33,11 +33,14 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_URLS": "https://+:977;http://+:731",
+        "ASPNETCORE_HTTPS_PORTS": "25091",
+        "ASPNETCORE_HTTP_PORTS": "22990"
       },
       "publishAllPorts": true,
-      "useSSL": true
+      "httpPort": 22990,
+      "useSSL": true,
+      "sslPort": 25091
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -46,7 +49,7 @@
     "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:39720",
-      "sslPort": 44382
+      "sslPort": 47382
     }
   }
 }
