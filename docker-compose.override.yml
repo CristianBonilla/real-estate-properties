@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  real-estate-properties-api:
+  realestate-properties-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:977;http://+:731

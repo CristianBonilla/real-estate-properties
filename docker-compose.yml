@@ -1,22 +1,26 @@
 version: '3.9'
 
 networks:
-  real-estate-properties-network:
+  realestate-properties-network:
   # default:
-  #   name: real-estate-properties-network
+  #   name: realestate-properties-network
 
 services:
-  real-estate-properties-api:
+  realestate-properties-api:
     image: ${DOCKER_REGISTRY-}realestatepropertiesapi
-    container_name: real-estate-properties-API
+    container_name: realestate-properties-API
     build:
       context: .
       dockerfile: RealEstateProperties.API/Dockerfile
+    depends_on:
+      - realestate-properties-db
+    networks:
+      - realestate-properties-network
 
-  real-estate-properties-db:
+  realestate-properties-db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     restart: always
-    container_name: real-estate-properties-DB
+    container_name: realestate-properties-DB
     hostname: sql-server
     environment:
       - ACCEPT_EULA=Y
@@ -28,9 +32,9 @@ services:
     expose:
       - 17765
     volumes:
-      - real-estate-properties-db:/var/opt/mssql
+      - realestate-properties-db:/var/opt/mssql
     networks:
-      - real-estate-properties-network
+      - realestate-properties-network
 
 volumes:
-  real-estate-properties-db:
+  realestate-properties-db:
