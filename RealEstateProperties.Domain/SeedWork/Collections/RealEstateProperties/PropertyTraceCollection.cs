@@ -55,8 +55,8 @@ namespace RealEstateProperties.Domain.SeedWork.Collections.RealEstateProperties
         Name = "The Kingfisher Trace",
         Value = 1122910000,
         Tax = 8950000,
-        DateSale = new(2024, 8, 22, 30, 2, 18, TimeSpan.FromHours(3)),
-        Created = new(2024, 8, 22, 30, 2, 18, TimeSpan.FromHours(3))
+        DateSale = new(2024, 8, 22, 1, 2, 18, TimeSpan.FromHours(3)),
+        Created = new(2024, 8, 22, 1, 2, 18, TimeSpan.FromHours(3))
       }
     ];
   }

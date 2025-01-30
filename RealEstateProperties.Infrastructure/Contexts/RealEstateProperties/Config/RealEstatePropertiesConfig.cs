@@ -21,14 +21,10 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
         .HasMaxLength(150)
         .IsUnicode()
         .IsRequired();
-      builder.ComplexProperty(property => property.Photo, photoBuilder =>
-      {
-        photoBuilder.Property(property => property.Photo)
-          .IsRequired();
-        photoBuilder.Property(property => property.PhotoName)
-          .HasColumnType("varchar(max)")
-          .IsRequired();
-      });
+      builder.Property(property => property.Photo);
+      builder.Property(property => property.PhotoName)
+        .HasMaxLength(100)
+        .IsUnicode(false);
       builder.Property(property => property.Birthday)
         .IsRequired();
       builder.Property(property => property.Created)
@@ -80,7 +76,7 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
         .OnDelete(DeleteBehavior.Cascade);
       builder.HasMany(many => many.Traces)
         .WithOne(one => one.Property)
-        .HasForeignKey(key => key.Property)
+        .HasForeignKey(key => key.PropertyId)
         .OnDelete(DeleteBehavior.Cascade);
       if (seedData is not null)
         builder.HasData(seedData.RealEstateProperties.Properties.GetAll());
@@ -95,14 +91,11 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
         .HasKey(key => key.PropertyId);
       builder.Property(property => property.PropertyImageId)
         .HasDefaultValueSql("NEWID()");
-      builder.ComplexProperty(property => property.Image, imageBuilder =>
-      {
-        imageBuilder.Property(property => property.File)
-          .IsRequired();
-        imageBuilder.Property(property => property.FileName)
-          .HasColumnType("varchar(max)")
-          .IsRequired();
-      });
+      builder.Property(property => property.Image)
+        .IsRequired();
+      builder.Property(property => property.ImageName)
+        .HasMaxLength(100)
+        .IsRequired();
       builder.Property(property => property.Enabled)
         .IsRequired();
       builder.Property(property => property.Created)

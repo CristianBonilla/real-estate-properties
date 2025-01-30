@@ -14,7 +14,8 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties
         typeof(OwnerConfig),
         typeof(PropertyConfig),
         typeof(PropertyImageConfig),
-        typeof(PropertyTraceConfig));
+        typeof(PropertyTraceConfig)
+      );
     }
   }
 }
