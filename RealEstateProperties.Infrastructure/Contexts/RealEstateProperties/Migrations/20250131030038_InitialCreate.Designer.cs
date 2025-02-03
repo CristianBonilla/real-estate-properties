@@ -12,7 +12,7 @@ using RealEstateProperties.Infrastructure.Contexts.RealEstateProperties;
 namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Migrations
 {
     [DbContext(typeof(RealEstatePropertiesContext))]
-    [Migration("20250131001720_InitialCreate")]
+    [Migration("20250131030038_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -108,8 +108,8 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Migr
                             IsActive = true,
                             Lastname = "Bonilla",
                             Mobile = "+573163534451",
-                            Password = "vdGxmyhz/kvJtIwDCpFQ4xloCzUizOWTKCEb8x8aOyCiAsD1r+KhZCQSPp7M2+ABc86ovOX6D45zHTuns2a/xg==",
-                            Salt = new byte[] { 189, 209, 177, 155, 40, 115, 254, 75, 201, 180, 140, 3, 10, 145, 80, 227, 25, 104, 11, 53, 34, 204, 229, 147, 40, 33, 27, 243, 31, 26, 59, 32 },
+                            Password = "oO63zcP14ylquh+FDz/NdI3v2Zltfk2p4gmLcZ6bmmwcwCJlEMjIH95egAt/BGZiWjKVTkblXoQOuxv/OAFegw==",
+                            Salt = new byte[] { 160, 238, 183, 205, 195, 245, 227, 41, 106, 186, 31, 133, 15, 63, 205, 116, 141, 239, 217, 153, 109, 126, 77, 169, 226, 9, 139, 113, 158, 155, 154, 108 },
                             Username = "chris__boni"
                         });
                 });

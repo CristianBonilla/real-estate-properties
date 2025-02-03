@@ -150,7 +150,7 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Migr
           schema: "dbo",
           table: "User",
           columns: new[] { "UserId", "DocumentNumber", "Email", "Firstname", "IsActive", "Lastname", "Mobile", "Password", "Salt", "Username" },
-          values: new object[] { new Guid("c880a1fd-2c32-46cb-b744-a6fad6175a53"), "1023944678", "cristian10camilo95@gmail.com", "Cristian Camilo", true, "Bonilla", "+573163534451", "vdGxmyhz/kvJtIwDCpFQ4xloCzUizOWTKCEb8x8aOyCiAsD1r+KhZCQSPp7M2+ABc86ovOX6D45zHTuns2a/xg==", new byte[] { 189, 209, 177, 155, 40, 115, 254, 75, 201, 180, 140, 3, 10, 145, 80, 227, 25, 104, 11, 53, 34, 204, 229, 147, 40, 33, 27, 243, 31, 26, 59, 32 }, "chris__boni" });
+          values: new object[] { new Guid("c880a1fd-2c32-46cb-b744-a6fad6175a53"), "1023944678", "cristian10camilo95@gmail.com", "Cristian Camilo", true, "Bonilla", "+573163534451", "oO63zcP14ylquh+FDz/NdI3v2Zltfk2p4gmLcZ6bmmwcwCJlEMjIH95egAt/BGZiWjKVTkblXoQOuxv/OAFegw==", new byte[] { 160, 238, 183, 205, 195, 245, 227, 41, 106, 186, 31, 133, 15, 63, 205, 116, 141, 239, 217, 153, 109, 126, 77, 169, 226, 9, 139, 113, 158, 155, 154, 108 }, "chris__boni" });
 
       migrationBuilder.InsertData(
           schema: "dbo",
