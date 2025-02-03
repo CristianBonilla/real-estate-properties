@@ -11,7 +11,7 @@ GO
 BEGIN TRANSACTION;
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE TABLE [dbo].[Owner] (
@@ -29,7 +29,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE TABLE [dbo].[User] (
@@ -51,7 +51,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE TABLE [dbo].[Property] (
@@ -71,7 +71,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE TABLE [dbo].[PropertyImage] (
@@ -89,7 +89,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE TABLE [dbo].[PropertyTrace] (
@@ -108,7 +108,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'OwnerId', N'Address', N'Birthday', N'Created', N'Name', N'Photo', N'PhotoName') AND [object_id] = OBJECT_ID(N'[dbo].[Owner]'))
@@ -122,20 +122,20 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'UserId', N'DocumentNumber', N'Email', N'Firstname', N'IsActive', N'Lastname', N'Mobile', N'Password', N'Salt', N'Username') AND [object_id] = OBJECT_ID(N'[dbo].[User]'))
         SET IDENTITY_INSERT [dbo].[User] ON;
     EXEC(N'INSERT INTO [dbo].[User] ([UserId], [DocumentNumber], [Email], [Firstname], [IsActive], [Lastname], [Mobile], [Password], [Salt], [Username])
-    VALUES (''c880a1fd-2c32-46cb-b744-a6fad6175a53'', ''1023944678'', ''cristian10camilo95@gmail.com'', ''Cristian Camilo'', CAST(1 AS bit), ''Bonilla'', ''+573163534451'', ''+6mggnIOjBuADzB34SnKHFMrSAnFf48OST2iSVIdN5Tkz3pbYkemNA3hP/w+Ea3EIKrgBsCU0YqSZDGKP9Zvag=='', 0xFBA9A082720E8C1B800F3077E129CA1C532B4809C57F8F0E493DA249521D3794, ''chris__boni'')');
+    VALUES (''c880a1fd-2c32-46cb-b744-a6fad6175a53'', ''1023944678'', ''cristian10camilo95@gmail.com'', ''Cristian Camilo'', CAST(1 AS bit), ''Bonilla'', ''+573163534451'', ''oO63zcP14ylquh+FDz/NdI3v2Zltfk2p4gmLcZ6bmmwcwCJlEMjIH95egAt/BGZiWjKVTkblXoQOuxv/OAFegw=='', 0xA0EEB7CDC3F5E3296ABA1F850F3FCD748DEFD9996D7E4DA9E2098B719E9B9A6C, ''chris__boni'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'UserId', N'DocumentNumber', N'Email', N'Firstname', N'IsActive', N'Lastname', N'Mobile', N'Password', N'Salt', N'Username') AND [object_id] = OBJECT_ID(N'[dbo].[User]'))
         SET IDENTITY_INSERT [dbo].[User] OFF;
 END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyId', N'Address', N'CodeInternal', N'Created', N'Name', N'OwnerId', N'Price', N'Year') AND [object_id] = OBJECT_ID(N'[dbo].[Property]'))
@@ -152,7 +152,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyId', N'Created', N'Enabled', N'Image', N'ImageName', N'PropertyImageId') AND [object_id] = OBJECT_ID(N'[dbo].[PropertyImage]'))
@@ -169,7 +169,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyTraceId', N'Created', N'DateSale', N'Name', N'PropertyId', N'Tax', N'Value') AND [object_id] = OBJECT_ID(N'[dbo].[PropertyTrace]'))
@@ -186,7 +186,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_Property_OwnerId] ON [dbo].[Property] ([OwnerId]);
@@ -194,7 +194,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_PropertyTrace_PropertyId] ON [dbo].[PropertyTrace] ([PropertyId]);
@@ -202,7 +202,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_User_DocumentNumber_Username_Email_Mobile] ON [dbo].[User] ([DocumentNumber], [Username], [Email], [Mobile]);
@@ -210,11 +210,11 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250301221814_InitialCreate'
+    WHERE [MigrationId] = N'20250301223759_InitialCreate'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20250301221814_InitialCreate', N'9.0.1');
+    VALUES (N'20250301223759_InitialCreate', N'9.0.1');
 END;
 
 COMMIT;
