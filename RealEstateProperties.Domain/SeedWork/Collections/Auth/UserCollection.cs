@@ -1,12 +1,12 @@
 using RealEstateProperties.Contracts.SeedData;
 using RealEstateProperties.Domain.Entities.Auth;
-using RealEstateProperties.Domain.Helpers;
 
 namespace RealEstateProperties.Domain.SeedWork.Collections.Auth
 {
   class UserCollection : SeedDataCollection<UserEntity>
   {
-    readonly (string Password, byte[] SaltBytes) _hash = HashPasswordHelper.Create("C.C1023944678.1995");
+    const string PASSWORD = "oO63zcP14ylquh+FDz/NdI3v2Zltfk2p4gmLcZ6bmmwcwCJlEMjIH95egAt/BGZiWjKVTkblXoQOuxv/OAFegw==";
+    readonly byte[] _saltBytes = [160, 238, 183, 205, 195, 245, 227, 41, 106, 186, 31, 133, 15, 63, 205, 116, 141, 239, 217, 153, 109, 126, 77, 169, 226, 9, 139, 113, 158, 155, 154, 108];
 
     protected override UserEntity[] Collection => [
       new()
@@ -15,12 +15,12 @@ namespace RealEstateProperties.Domain.SeedWork.Collections.Auth
         DocumentNumber = "1023944678",
         Mobile = "+573163534451",
         Username = "chris__boni",
-        Password = _hash.Password,
+        Password = PASSWORD,
         Email = "cristian10camilo95@gmail.com",
         Firstname = "Cristian Camilo",
         Lastname = "Bonilla",
         IsActive = true,
-        Salt = _hash.SaltBytes
+        Salt = _saltBytes
       }
     ];
   }
