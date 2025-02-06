@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using RealEstateProperties.Domain.Helpers;
+using RealEstateProperties.API.Filters;
 
 namespace RealEstateProperties.API.Installers
 {
@@ -11,6 +12,7 @@ namespace RealEstateProperties.API.Installers
   {
     public void InstallServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
     {
+      services.AddMvc(options => options.Filters.Add<ServiceErrorExceptionFilterAttribute>());
       services.AddControllers()
         .AddNewtonsoftJson(JsonSerializer);
       // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
