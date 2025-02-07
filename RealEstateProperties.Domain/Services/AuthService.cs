@@ -1,9 +1,9 @@
+using System.Linq.Expressions;
 using RealEstateProperties.Contracts.Services;
 using RealEstateProperties.Domain.Entities.Auth;
 using RealEstateProperties.Domain.Helpers;
 using RealEstateProperties.Infrastructure.Repositories.Auth.Interfaces;
 using RealEstateProperties.Infrastructure.Repositories.RealEstateProperties.Interfaces;
-using System.Linq.Expressions;
 
 namespace RealEstateProperties.Domain.Services
 {
@@ -14,6 +14,10 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<UserEntity> AddUser(UserEntity user)
     {
+      var (password, salt) = HashPasswordHelper.Create(user.Password);
+      user.Password = password;
+      user.Salt = salt;
+      user.IsActive = true;
       user = _userRepository.Create(user);
       _ = await _context.SaveAsync();
 
