@@ -22,6 +22,8 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<PropertyEntity> AddProperty(PropertyEntity property)
     {
+      Random random = new();
+      property.CodeInternal = random.Next();
       PropertyEntity addProperty = _propertyRepository.Create(property);
       _ = await _context.SaveAsync();
 
@@ -50,17 +52,16 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<PropertyImageEntity> AddPropertyImage(PropertyImageEntity propertyImage)
     {
+      propertyImage.Enabled = true;
       PropertyImageEntity addPropertyImage = _propertyImageRepository.Create(propertyImage);
       _ = await _context.SaveAsync();
 
       return addPropertyImage;
     }
 
-    public async Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyImageId, PropertyImageEntity propertyImage)
+    public async Task<PropertyImageEntity> UpdatePropertyImage(PropertyImageEntity propertyImage)
     {
-      PropertyImageEntity updatePropertyImage = GetPropertyImage(propertyImageId)
-        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Property image not found with property image identifier \"{propertyImageId}\"");
-      updatePropertyImage = _propertyImageRepository.Update(updatePropertyImage);
+      PropertyImageEntity updatePropertyImage = _propertyImageRepository.Update(propertyImage);
       _ = await _context.SaveAsync();
 
       return updatePropertyImage;
@@ -76,6 +77,14 @@ namespace RealEstateProperties.Domain.Services
       _ = await _context.SaveAsync();
 
       return propertyImage;
+    }
+
+    public async Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace)
+    {
+      PropertyTraceEntity addPropertyTrace = _propertyTraceRepository.Create(propertyTrace);
+      _ = await _context.SaveAsync();
+
+      return addPropertyTrace;
     }
 
     public IAsyncEnumerable<(OwnerEntity Owner, PropertyEntity? Property, PropertyTraceEntity? PropertyTrace)> GetProperties()
