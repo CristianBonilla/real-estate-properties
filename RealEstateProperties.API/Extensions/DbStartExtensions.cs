@@ -43,7 +43,7 @@ namespace RealEstateProperties.API.Extensions
         catch (Exception exception) when (exception is InvalidOperationException || exception is DbException)
         {
           await Task.Delay(TimeSpan.FromSeconds(1));
-          Console.WriteLine($"{++delay} seconds have passed, an error occurred, retrying. Connecting...");
+          Console.WriteLine($"{++delay} seconds have passed, retrying DB connection...");
           await Connect(start);
         }
       }
