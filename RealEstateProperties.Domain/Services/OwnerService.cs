@@ -25,9 +25,10 @@ namespace RealEstateProperties.Domain.Services
         ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
       owner.Photo = photo;
       owner.PhotoName = photoName;
+      OwnerEntity updatedOwner = _ownerRepository.Update(owner);
       _ = await _context.SaveAsync();
 
-      return owner;
+      return updatedOwner;
     }
 
     public Task<OwnerEntity?> FindOwnerById(Guid ownerId) => Task.FromResult(_ownerRepository.Find([ownerId]));

@@ -42,29 +42,25 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<PropertyEntity> UpdatePropertyPrice(Guid propertyId, decimal price)
     {
-      PropertyEntity? property = GetProperty(propertyId)
+      PropertyEntity property = GetProperty(propertyId)
         ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Property not found with property identifier \"{propertyId}\"");
-      property = _propertyRepository.Update(property);
+      PropertyEntity updatedProperty = _propertyRepository.Update(property);
       await _context.SaveAsync();
 
-      return property;
+      return updatedProperty;
     }
 
-    public async Task<PropertyImageEntity> AddPropertyImage(PropertyImageEntity propertyImage)
+    public async Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyImageId, byte[] image, string imageName)
     {
+      PropertyImageEntity propertyImage = GetPropertyImage(propertyImageId)
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Property image not found with property image identifier \"{propertyImageId}\"");
       propertyImage.Enabled = true;
-      PropertyImageEntity addPropertyImage = _propertyImageRepository.Create(propertyImage);
+      propertyImage.Image = image;
+      propertyImage.ImageName = imageName;
+      PropertyImageEntity updatedPropertyImage = _propertyImageRepository.Update(propertyImage);
       _ = await _context.SaveAsync();
 
-      return addPropertyImage;
-    }
-
-    public async Task<PropertyImageEntity> UpdatePropertyImage(PropertyImageEntity propertyImage)
-    {
-      PropertyImageEntity updatePropertyImage = _propertyImageRepository.Update(propertyImage);
-      _ = await _context.SaveAsync();
-
-      return updatePropertyImage;
+      return updatedPropertyImage;
     }
 
     public Task<PropertyImageEntity?> FindPropertyImage(Guid propertyImageId) => Task.FromResult(GetPropertyImage(propertyImageId));

@@ -7,8 +7,7 @@ namespace RealEstateProperties.Contracts.Services
     Task<PropertyEntity> AddProperty(PropertyEntity property);
     Task<PropertyEntity> DeleteProperty(Guid propertyId);
     Task<PropertyEntity> UpdatePropertyPrice(Guid propertyId, decimal price);
-    Task<PropertyImageEntity> AddPropertyImage(PropertyImageEntity propertyImage);
-    Task<PropertyImageEntity> UpdatePropertyImage(PropertyImageEntity propertyImage);
+    Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyImageId, byte[] image, string imageName);
     Task<PropertyImageEntity?> FindPropertyImage(Guid propertyImageId);
     Task<PropertyImageEntity> DeletePropertyImage(Guid propertyImageId);
     Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace);
