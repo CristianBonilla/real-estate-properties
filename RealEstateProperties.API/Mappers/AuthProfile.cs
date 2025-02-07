@@ -9,8 +9,17 @@ namespace RealEstateProperties.API.Mappers
     public AuthProfile()
     {
       CreateMap<UserEntity, UserEntity>();
-      CreateMap<UserRegisterRequest, UserEntity>();
-      CreateMap<UserEntity, UserResponse>();
+      CreateMap<UserRegisterRequest, UserEntity>()
+        .ForMember(member => member.UserId, options => options.Ignore())
+        .ForMember(member => member.IsActive, options => options.Ignore())
+        .ForMember(member => member.Salt, options => options.Ignore())
+        .ForMember(member => member.Created, options => options.Ignore())
+        .ForMember(member => member.Version, options => options.Ignore());
+      CreateMap<UserEntity, UserResponse>()
+        .ReverseMap()
+        .ForMember(member => member.Password, options => options.Ignore())
+        .ForMember(member => member.Salt, options => options.Ignore())
+        .ForMember(member => member.Version, options => options.Ignore());
     }
   }
 }
