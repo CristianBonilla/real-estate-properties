@@ -1,3 +1,5 @@
+using System.Net;
+using RealEstateProperties.Contracts.Exceptions;
 using RealEstateProperties.Contracts.Services;
 using RealEstateProperties.Domain.Entities;
 using RealEstateProperties.Infrastructure.Repositories.RealEstateProperties.Interfaces;
@@ -11,7 +13,18 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<OwnerEntity> AddOwner(OwnerEntity owner)
     {
-      owner = _ownerRepository.Create(owner);
+      OwnerEntity addOwner = _ownerRepository.Create(owner);
+      _ = await _context.SaveAsync();
+
+      return addOwner;
+    }
+
+    public async Task<OwnerEntity> UpdateOwnerPhoto(Guid ownerId, byte[] photo, string photoName)
+    {
+      OwnerEntity owner = _ownerRepository.Find([ownerId])
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
+      owner.Photo = photo;
+      owner.PhotoName = photoName;
       _ = await _context.SaveAsync();
 
       return owner;
