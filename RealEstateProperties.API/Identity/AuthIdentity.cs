@@ -16,10 +16,10 @@ using RealEstateProperties.Domain.Helpers;
 
 namespace RealEstateProperties.API.Identity
 {
-  class Identity(
+  class AuthIdentity(
     IMapper mapper,
     IAuthService authService,
-    JwtOptions jwtOptions) : IIdentity
+    JwtOptions jwtOptions) : IAuthIdentity
   {
     readonly IMapper _mapper = mapper;
     readonly IAuthService _authService = authService;

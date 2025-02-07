@@ -1,6 +1,8 @@
 using Autofac;
 using RealEstateProperties.Infrastructure.Repositories.Auth.Interfaces;
 using RealEstateProperties.Infrastructure.Repositories.Auth;
+using RealEstateProperties.Contracts.Identity;
+using RealEstateProperties.API.Identity;
 
 namespace RealEstateProperties.API.Modules
 {
@@ -10,6 +12,9 @@ namespace RealEstateProperties.API.Modules
     {
       builder.RegisterType<UserRepository>()
         .As<IUserRepository>()
+        .InstancePerLifetimeScope();
+      builder.RegisterType<AuthIdentity>()
+        .As<IAuthIdentity>()
         .InstancePerLifetimeScope();
     }
   }
