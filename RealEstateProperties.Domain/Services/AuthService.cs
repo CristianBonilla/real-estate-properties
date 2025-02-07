@@ -18,10 +18,10 @@ namespace RealEstateProperties.Domain.Services
       user.Password = password;
       user.Salt = salt;
       user.IsActive = true;
-      user = _userRepository.Create(user);
+      UserEntity addUser = _userRepository.Create(user);
       _ = await _context.SaveAsync();
 
-      return user;
+      return addUser;
     }
 
     public Task<UserEntity?> FindUserById(Guid userId) => Task.FromResult(_userRepository.Find([userId]));
