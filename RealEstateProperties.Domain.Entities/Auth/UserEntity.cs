@@ -10,7 +10,7 @@ namespace RealEstateProperties.Domain.Entities.Auth
     public required string Email { get; set; }
     public required string Firstname { get; set; }
     public required string Lastname { get; set; }
-    public required bool IsActive { get; set; }
+    public bool IsActive { get; set; }
     public required byte[] Salt { get; set; }
     public DateTimeOffset Created { get; set; }
     public byte[] Version { get; set; } = null!;
