@@ -44,8 +44,4 @@
     <ProjectReference Include="..\RealEstateProperties.Infrastructure\RealEstateProperties.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
