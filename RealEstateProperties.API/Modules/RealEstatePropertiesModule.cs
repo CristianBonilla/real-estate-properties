@@ -1,4 +1,6 @@
 using Autofac;
+using RealEstateProperties.Contracts.Services;
+using RealEstateProperties.Domain.Services;
 using RealEstateProperties.Infrastructure.Repositories.RealEstateProperties;
 using RealEstateProperties.Infrastructure.Repositories.RealEstateProperties.Interfaces;
 
@@ -19,6 +21,16 @@ namespace RealEstateProperties.API.Modules
         .InstancePerLifetimeScope();
       builder.RegisterType<PropertyTraceRepository>()
         .As<IPropertyTraceRepository>()
+        .InstancePerLifetimeScope();
+
+      builder.RegisterType<AuthService>()
+        .As<IAuthService>()
+        .InstancePerLifetimeScope();
+      builder.RegisterType<OwnerService>()
+        .As<IOwnerService>()
+        .InstancePerLifetimeScope();
+      builder.RegisterType<PropertiesService>()
+        .As<IPropertiesService>()
         .InstancePerLifetimeScope();
     }
   }
