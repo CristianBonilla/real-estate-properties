@@ -1,4 +1,5 @@
 using AutoMapper;
+using RealEstateProperties.API.Mappers.Converters;
 using RealEstateProperties.Contracts.DTO.Owner;
 using RealEstateProperties.Contracts.DTO.Properties;
 using RealEstateProperties.Domain.Entities;
@@ -48,6 +49,12 @@ namespace RealEstateProperties.API.Mappers
         .ReverseMap()
         .ForMember(member => member.Version, options => options.Ignore())
         .ForMember(member => member.Property, options => options.Ignore());
+      CreateMap<IAsyncEnumerable<(
+        OwnerEntity Owner,
+        PropertyEntity? Property,
+        PropertyTraceEntity? PropertyTrace)>,
+        IAsyncEnumerable<PropertiesResult>>()
+        .ConvertUsing<PropertiesFilterConverter>();
     }
   }
 }
