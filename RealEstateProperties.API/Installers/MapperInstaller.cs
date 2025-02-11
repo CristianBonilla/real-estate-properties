@@ -6,8 +6,9 @@ namespace RealEstateProperties.API.Installers
   {
     public void InstallServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
     {
-      services.AddAutoMapper(services => services.AddProfile<AuthProfile>());
-      services.AddAutoMapper(services => services.AddProfile<RealEstatePropertiesProfile>());
+      services.AddAutoMapper(
+        typeof(AuthProfile),
+        typeof(RealEstatePropertiesProfile));
     }
   }
 }
