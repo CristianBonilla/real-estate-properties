@@ -5,7 +5,7 @@ using RealEstateProperties.Domain.Helpers;
 
 namespace RealEstateProperties.API.Installers
 {
-  public class SwaggerInstaller : IInstaller
+  class SwaggerInstaller : IInstaller
   {
     public void InstallServices(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
     {
@@ -22,15 +22,17 @@ namespace RealEstateProperties.API.Installers
           Contact = swagger is null ? default : swagger.Contact
         });
         options.SchemaFilter<EnumSchemaFilter>();
-        OpenApiSecurityScheme apiSecurity = new()
+        if (swagger?.SecurityScheme is not null)
         {
-          Reference = new OpenApiReference
+          OpenApiSecurityScheme apiSecurity = swagger.SecurityScheme;
+          apiSecurity.Reference = new()
           {
             Id = ApiConfigKeys.Bearer,
             Type = ReferenceType.SecurityScheme
-          }
-        };
-        options.AddSecurityRequirement(new() { { apiSecurity, new List<string>() } });
+          };
+          options.AddSecurityDefinition(ApiConfigKeys.Bearer, apiSecurity);
+          options.AddSecurityRequirement(new() { { apiSecurity, new List<string>() } });
+        }
       });
     }
   }
