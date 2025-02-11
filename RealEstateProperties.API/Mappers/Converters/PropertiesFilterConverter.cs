@@ -11,7 +11,7 @@ namespace RealEstateProperties.API.Mappers.Converters
     PropertyTraceEntity? PropertyTrace)>,
     IAsyncEnumerable<PropertiesResult>>
   {
-    public IAsyncEnumerable<PropertiesResult> Convert(
+    public async IAsyncEnumerable<PropertiesResult> Convert(
       IAsyncEnumerable<(
         OwnerEntity Owner,
         PropertyEntity? Property,
@@ -20,11 +20,12 @@ namespace RealEstateProperties.API.Mappers.Converters
       ResolutionContext context)
     {
       IRuntimeMapper mapper = context.Mapper;
-      var owners = source.Select(source => source.Owner);
-      var properties = source.Select(source => source.Property);
-      var propertyTraces = source.Select(source => source.PropertyTrace);
-      
-      return owners
+      var sources = await source.ToArrayAsync();
+      var owners = sources.Select(source => source.Owner);
+      var properties = sources.Select(source => source.Property);
+      var propertyTraces = sources.Select(source => source.PropertyTrace);
+      var propertiesResult = owners
+        .Distinct()
         .GroupJoin(
           properties,
           owner => owner.OwnerId,
@@ -40,9 +41,11 @@ namespace RealEstateProperties.API.Mappers.Converters
                 (property, propertyTraces) => GetProperty(mapper, property, propertyTraces))
           }
         );
+      foreach (PropertiesResult propertyResult in propertiesResult)
+        yield return propertyResult;
     }
 
-    private static PropertyResponse? GetProperty(IRuntimeMapper mapper, PropertyEntity? property, IAsyncEnumerable<PropertyTraceEntity?> propertyTraces)
+    private static PropertyResponse? GetProperty(IRuntimeMapper mapper, PropertyEntity? property, IEnumerable<PropertyTraceEntity?> propertyTraces)
     {
       PropertyResponse? propertyResponse = mapper.Map<PropertyResponse?>(property);
       if (propertyResponse is not null)
