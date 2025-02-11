@@ -23,9 +23,6 @@ namespace RealEstateProperties.API.Modules
         .As<IPropertyTraceRepository>()
         .InstancePerLifetimeScope();
 
-      builder.RegisterType<AuthService>()
-        .As<IAuthService>()
-        .InstancePerLifetimeScope();
       builder.RegisterType<OwnerService>()
         .As<IOwnerService>()
         .InstancePerLifetimeScope();
