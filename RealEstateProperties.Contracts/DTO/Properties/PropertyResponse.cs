@@ -10,6 +10,6 @@ namespace RealEstateProperties.Contracts.DTO.Properties
     public int CodeInternal { get; set; }
     public required int Year { get; set; }
     public DateTimeOffset Created { get; set; }
-    public required IAsyncEnumerable<PropertyTraceResponse?> PropertyTraces { get; set; }
+    public required IEnumerable<PropertyTraceResponse?> PropertyTraces { get; set; }
   }
 }
