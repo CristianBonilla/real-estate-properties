@@ -9,6 +9,7 @@ namespace RealEstateProperties.API.Options
     public required string Title { get; set; }
     public string? Description { get; set; }
     public OpenApiContact? Contact { get; set; }
+    public OpenApiSecurityScheme? SecurityScheme { get; set; }
     public required string Version { get; set; }
   }
 }
