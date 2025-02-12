@@ -25,10 +25,6 @@ namespace RealEstateProperties.Domain.Services
 
     public Task<UserEntity?> FindUserById(Guid userId) => Task.FromResult(_userRepository.Find([userId]));
 
-    public async Task<UserEntity?> FindUserByUsername(string username) => await GetUsers().FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Username, username));
-
-    public async Task<UserEntity?> FindUserByEmail(string email) => await GetUsers().FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Email, email));
-
     public async Task<UserEntity?> FindUserByUsernameOrEmail(string usernameOrEmail)
       => await GetUsers().FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Username, usernameOrEmail) || StringCommonHelper.IsStringEquivalent(user.Email, usernameOrEmail));
 
