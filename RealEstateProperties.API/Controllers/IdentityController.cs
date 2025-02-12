@@ -1,3 +1,4 @@
+using System.Net;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using RealEstateProperties.API.Filters;
 using RealEstateProperties.Contracts.DTO.Auth;
 using RealEstateProperties.Contracts.DTO.User;
+using RealEstateProperties.Contracts.Exceptions;
 using RealEstateProperties.Contracts.Identity;
 using RealEstateProperties.Contracts.Services;
+using RealEstateProperties.Domain.Entities.Auth;
 
 namespace RealEstateProperties.API.Controllers
 {
@@ -44,5 +47,39 @@ namespace RealEstateProperties.API.Controllers
 
       return CreatedAtAction(nameof(Login), auth);
     }
-  }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<UserResponse>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async IAsyncEnumerable<UserResponse> GetUsers()
+    {
+      var users = _authService.GetUsers();
+      await foreach (UserEntity user in users)
+        yield return _mapper.Map<UserResponse>(user);
+    }
+
+    [HttpGet("{userId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> FindUserById(Guid userId)
+    {
+      UserEntity user = await _authService.FindUserById(userId)
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"User not found with user identifier \"{userId}\"");
+
+      return Ok(_mapper.Map<UserResponse>(user));
+    }
+
+    [HttpGet("{usernameOrEmail}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> FindUserByUsernameOrEmail(string usernameOrEmail)
+    {
+      UserEntity user = await _authService.FindUserByUsernameOrEmail(usernameOrEmail)
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"User not found with user username or email \"{usernameOrEmail}\"");
+
+      return Ok(_mapper.Map<UserResponse>(user));
+    }
+  } 
 }
