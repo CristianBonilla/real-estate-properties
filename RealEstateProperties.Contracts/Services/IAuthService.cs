@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using RealEstateProperties.Domain.Entities.Auth;
 
 namespace RealEstateProperties.Contracts.Services
@@ -9,7 +8,8 @@ namespace RealEstateProperties.Contracts.Services
     Task<UserEntity?> FindUserById(Guid userId);
     Task<UserEntity?> FindUserByUsername(string username);
     Task<UserEntity?> FindUserByEmail(string email);
-    Task<bool> UserExists(Expression<Func<UserEntity, bool>> expression);
+    Task<UserEntity?> FindUserByUsernameOrEmail(string usernameOrEmail);
+    Task<bool> UserExists(string documentNumber, string email);
     IAsyncEnumerable<UserEntity> GetUsers();
   }
 }
