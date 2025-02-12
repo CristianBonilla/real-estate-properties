@@ -19,7 +19,7 @@ namespace RealEstateProperties.Domain.Services
       return addOwner;
     }
 
-    public async Task<OwnerEntity> UpdateOwnerPhoto(Guid ownerId, byte[] photo, string photoName)
+    public async Task<OwnerEntity> AddOrUpdateOwnerPhoto(Guid ownerId, byte[] photo, string photoName)
     {
       OwnerEntity owner = _ownerRepository.Find([ownerId])
         ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
