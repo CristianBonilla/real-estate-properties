@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using RealEstateProperties.Contracts.Services;
 using RealEstateProperties.Domain.Entities.Auth;
 using RealEstateProperties.Domain.Helpers;
@@ -26,11 +25,15 @@ namespace RealEstateProperties.Domain.Services
 
     public Task<UserEntity?> FindUserById(Guid userId) => Task.FromResult(_userRepository.Find([userId]));
 
-    public Task<UserEntity?> FindUserByUsername(string username) => Task.FromResult(_userRepository.Find(user => StringCommonHelper.IsStringEquivalent(user.Username, username)));
+    public async Task<UserEntity?> FindUserByUsername(string username) => await GetUsers().FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Username, username));
 
-    public Task<UserEntity?> FindUserByEmail(string email) => Task.FromResult(_userRepository.Find(user => StringCommonHelper.IsStringEquivalent(user.Email, email)));
+    public async Task<UserEntity?> FindUserByEmail(string email) => await GetUsers().FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Email, email));
 
-    public Task<bool> UserExists(Expression<Func<UserEntity, bool>> expression) => Task.FromResult(_userRepository.Exists(expression));
+    public async Task<UserEntity?> FindUserByUsernameOrEmail(string usernameOrEmail)
+      => await GetUsers().FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Username, usernameOrEmail) || StringCommonHelper.IsStringEquivalent(user.Email, usernameOrEmail));
+
+    public async Task<bool> UserExists(string documentNumber, string username)
+      => await GetUsers().AnyAsync(user => StringCommonHelper.IsStringEquivalent(user.DocumentNumber, documentNumber) || StringCommonHelper.IsStringEquivalent(user.Username, username));
 
     public IAsyncEnumerable<UserEntity> GetUsers()
     {
