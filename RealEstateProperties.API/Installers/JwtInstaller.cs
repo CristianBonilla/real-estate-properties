@@ -13,7 +13,7 @@ namespace RealEstateProperties.API.Installers
       services.Configure<JwtOptions>(jwtSection);
       JwtOptions jwtOptions = jwtSection.Get<JwtOptions>()!;
       services.AddSingleton(jwtOptions);
-      byte[] key = Encoding.ASCII.GetBytes(jwtOptions.Secret);
+      byte[] key = Encoding.UTF8.GetBytes(jwtOptions.Secret);
       services.AddAuthentication(auth =>
       {
         auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
