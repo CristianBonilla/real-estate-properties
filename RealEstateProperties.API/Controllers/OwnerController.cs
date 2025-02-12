@@ -60,14 +60,14 @@ namespace RealEstateProperties.API.Controllers
     [HttpPut("photo/{ownerId}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateOwnerPhoto(Guid ownerId, IFormFile photo)
+    public async Task<IActionResult> AddOrUpdateOwnerPhoto(Guid ownerId, IFormFile photo)
     {
       if (photo.Length <= 0)
         throw new ServiceErrorException(HttpStatusCode.BadRequest, "There is no owner photo to process");
       using MemoryStream memoryStream = new();
       await photo.CopyToAsync(memoryStream);
       byte[] photoBytes = memoryStream.ToArray();
-      _ = await _ownerService.UpdateOwnerPhoto(ownerId, photoBytes, photo.FileName);
+      _ = await _ownerService.AddOrUpdateOwnerPhoto(ownerId, photoBytes, photo.FileName);
 
       return File(photoBytes, "application/octet-stream", photo.FileName);
     }
