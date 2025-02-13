@@ -61,7 +61,7 @@ namespace RealEstateProperties.API.Controllers
     public async Task<IActionResult> AddOrUpdateOwnerPhoto(Guid ownerId, IFormFile photo)
     {
       if (photo.Length <= 0)
-        return StatusCode(StatusCodes.Status400BadRequest, "There is no image to process");
+        return StatusCode(StatusCodes.Status400BadRequest, "There is no owner photo to process");
       using MemoryStream memoryStream = new();
       await photo.CopyToAsync(memoryStream);
       byte[] photoBytes = memoryStream.ToArray();
