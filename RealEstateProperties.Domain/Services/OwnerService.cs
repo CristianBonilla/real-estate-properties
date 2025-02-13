@@ -31,7 +31,13 @@ namespace RealEstateProperties.Domain.Services
       return updatedOwner;
     }
 
-    public Task<OwnerEntity?> FindOwnerById(Guid ownerId) => Task.FromResult(_ownerRepository.Find([ownerId]));
+    public Task<OwnerEntity> FindOwnerById(Guid ownerId)
+    {
+      OwnerEntity owner = _ownerRepository.Find([ownerId])
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
+
+      return Task.FromResult(owner);
+    }
 
     public IAsyncEnumerable<OwnerEntity> GetOwners()
     {
