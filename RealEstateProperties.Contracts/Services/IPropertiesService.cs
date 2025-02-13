@@ -9,7 +9,7 @@ namespace RealEstateProperties.Contracts.Services
     Task<PropertyEntity> UpdatePropertyPrice(Guid propertyId, decimal price);
     Task<PropertyImageEntity> AddPropertyImage(Guid propertyId, byte[] image, string imageName);
     Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyId, Guid propertyImageId, byte[] image, string imageName);
-    Task<PropertyImageEntity?> FindPropertyImage(Guid propertyId, Guid propertyImageId);
+    Task<PropertyImageEntity> FindPropertyImage(Guid propertyId, Guid propertyImageId);
     Task<PropertyImageEntity> DeletePropertyImage(Guid propertyId, Guid propertyImageId);
     Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace);
     IAsyncEnumerable<(OwnerEntity Owner, PropertyEntity? Property, PropertyTraceEntity? PropertyTrace)> GetProperties();
