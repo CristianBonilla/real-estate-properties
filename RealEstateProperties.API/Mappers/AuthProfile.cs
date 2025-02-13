@@ -8,7 +8,6 @@ namespace RealEstateProperties.API.Mappers
   {
     public AuthProfile()
     {
-      CreateMap<UserEntity, UserEntity>();
       CreateMap<UserRegisterRequest, UserEntity>()
         .ForMember(member => member.UserId, options => options.Ignore())
         .ForMember(member => member.IsActive, options => options.Ignore())
