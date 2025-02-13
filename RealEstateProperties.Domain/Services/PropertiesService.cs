@@ -22,12 +22,23 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<PropertyEntity> AddProperty(PropertyEntity property)
     {
+      CheckOwnerExists(property.OwnerId);
       Random random = new();
       property.CodeInternal = random.Next();
       PropertyEntity addedProperty = _propertyRepository.Create(property);
       _ = await _context.SaveAsync();
 
       return addedProperty;
+    }
+
+    public async Task<PropertyEntity> UpdateProperty(Guid propertyId, PropertyEntity property)
+    {
+      CheckPropertyExists(propertyId);
+      CheckOwnerExists(property.OwnerId);
+      PropertyEntity updatedProperty = _propertyRepository.Update(property);
+      await _context.SaveAsync();
+
+      return updatedProperty;
     }
 
     public async Task<PropertyEntity> DeleteProperty(Guid propertyId)
@@ -39,14 +50,7 @@ namespace RealEstateProperties.Domain.Services
       return deletedProperty;
     }
 
-    public async Task<PropertyEntity> UpdatePropertyPrice(Guid propertyId, decimal price)
-    {
-      PropertyEntity property = GetProperty(propertyId);
-      PropertyEntity updatedProperty = _propertyRepository.Update(property);
-      await _context.SaveAsync();
-
-      return updatedProperty;
-    }
+    public Task<PropertyEntity> FindPropertyById(Guid propertyId) => Task.FromResult(GetProperty(propertyId));
 
     public async Task<PropertyImageEntity> AddPropertyImage(Guid propertyId, byte[] image, string imageName)
     {
@@ -76,8 +80,6 @@ namespace RealEstateProperties.Domain.Services
       return updatedPropertyImage;
     }
 
-    public Task<PropertyImageEntity> FindPropertyImage(Guid propertyId, Guid propertyImageId) => Task.FromResult(GetPropertyImage(propertyId, propertyImageId));
-
     public async Task<PropertyImageEntity> DeletePropertyImage(Guid propertyId, Guid propertyImageId)
     {
       PropertyImageEntity propertyImage = GetPropertyImage(propertyId, propertyImageId);
@@ -89,6 +91,7 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace)
     {
+      CheckPropertyExists(propertyTrace.PropertyId);
       PropertyTraceEntity addPropertyTrace = _propertyTraceRepository.Create(propertyTrace);
       _ = await _context.SaveAsync();
 
@@ -160,6 +163,13 @@ namespace RealEstateProperties.Domain.Services
         .ToAsyncEnumerable();
 
       return propertyTraces;
+    }
+
+    private void CheckOwnerExists(Guid ownerId)
+    {
+      bool existingOwner = _ownerRepository.Exists(owner => owner.OwnerId == ownerId);
+      if (!existingOwner)
+        throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
     }
 
     private void CheckPropertyExists(Guid propertyId)
