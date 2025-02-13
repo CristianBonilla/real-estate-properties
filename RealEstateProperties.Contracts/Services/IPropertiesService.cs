@@ -14,7 +14,7 @@ namespace RealEstateProperties.Contracts.Services
     Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace);
     IAsyncEnumerable<(OwnerEntity Owner, PropertyEntity? Property, PropertyTraceEntity? PropertyTrace)> GetProperties();
     IAsyncEnumerable<(OwnerEntity Owner, PropertyEntity? Property, PropertyTraceEntity? PropertyTrace)> GetProperties(string text);
-    IAsyncEnumerable<PropertyImageEntity> GetImagesByPropertyId(Guid propertyId);
+    (string PropertyName, IEnumerable<PropertyImageEntity> PropertyImages) GetImagesByPropertyId(Guid propertyId);
     IAsyncEnumerable<PropertyTraceEntity> GetTracesByPropertyId(Guid propertyId);
   }
 }

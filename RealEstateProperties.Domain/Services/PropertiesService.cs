@@ -145,13 +145,12 @@ namespace RealEstateProperties.Domain.Services
       }
     }
 
-    public IAsyncEnumerable<PropertyImageEntity> GetImagesByPropertyId(Guid propertyId)
+    public (string PropertyName, IEnumerable<PropertyImageEntity> PropertyImages) GetImagesByPropertyId(Guid propertyId)
     {
-      CheckPropertyExists(propertyId);
-      var propertyImages = _propertyImageRepository.GetByFilter(propertyImage => propertyImage.PropertyId == propertyId)
-        .ToAsyncEnumerable();
+      PropertyEntity property = GetProperty(propertyId);
+      var propertyImages = _propertyImageRepository.GetByFilter(propertyImage => propertyImage.PropertyId == propertyId);
 
-      return propertyImages;
+      return (property.Name, propertyImages);
     }
 
     public IAsyncEnumerable<PropertyTraceEntity> GetTracesByPropertyId(Guid propertyId)
