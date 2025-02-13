@@ -7,9 +7,10 @@ namespace RealEstateProperties.Contracts.Services
     Task<PropertyEntity> AddProperty(PropertyEntity property);
     Task<PropertyEntity> DeleteProperty(Guid propertyId);
     Task<PropertyEntity> UpdatePropertyPrice(Guid propertyId, decimal price);
-    Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyImageId, byte[] image, string imageName);
-    Task<PropertyImageEntity?> FindPropertyImage(Guid propertyImageId);
-    Task<PropertyImageEntity> DeletePropertyImage(Guid propertyImageId);
+    Task<PropertyImageEntity> AddPropertyImage(Guid propertyId, byte[] image, string imageName);
+    Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyId, Guid propertyImageId, byte[] image, string imageName);
+    Task<PropertyImageEntity?> FindPropertyImage(Guid propertyId, Guid propertyImageId);
+    Task<PropertyImageEntity> DeletePropertyImage(Guid propertyId, Guid propertyImageId);
     Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace);
     IAsyncEnumerable<(OwnerEntity Owner, PropertyEntity? Property, PropertyTraceEntity? PropertyTrace)> GetProperties();
     IAsyncEnumerable<(OwnerEntity Owner, PropertyEntity? Property, PropertyTraceEntity? PropertyTrace)> GetProperties(string text);
