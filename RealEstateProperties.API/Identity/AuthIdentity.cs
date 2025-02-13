@@ -28,8 +28,7 @@ namespace RealEstateProperties.API.Identity
 
     public async Task<AuthResult> Login(UserLoginRequest userLoginRequest)
     {
-      UserEntity user = await _authService.FindUserByUsernameOrEmail(userLoginRequest.UsernameOrEmail)
-        ?? throw new ServiceErrorException(HttpStatusCode.Unauthorized, $"User is not registered or is incorrect \"{userLoginRequest.UsernameOrEmail}\"");
+      UserEntity user = await _authService.FindUserByUsernameOrEmail(userLoginRequest.UsernameOrEmail);
       bool userValidPassoword = HashPasswordHelper.Verify(userLoginRequest.Password, user.Password, user.Salt);
       if (!userValidPassoword)
         throw new ServiceErrorException(HttpStatusCode.Unauthorized, $"User password is invalid \"{userLoginRequest.Password}\"");

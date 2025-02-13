@@ -1,4 +1,3 @@
-using System.Net;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using RealEstateProperties.API.Filters;
 using RealEstateProperties.Contracts.DTO.Auth;
 using RealEstateProperties.Contracts.DTO.User;
-using RealEstateProperties.Contracts.Exceptions;
 using RealEstateProperties.Contracts.Identity;
 using RealEstateProperties.Contracts.Services;
 using RealEstateProperties.Domain.Entities.Auth;
@@ -64,8 +62,7 @@ namespace RealEstateProperties.API.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> FindUserById(Guid userId)
     {
-      UserEntity user = await _authService.FindUserById(userId)
-        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"User not found with user identifier \"{userId}\"");
+      UserEntity user = await _authService.FindUserById(userId);
 
       return Ok(_mapper.Map<UserResponse>(user));
     }
@@ -76,8 +73,7 @@ namespace RealEstateProperties.API.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> FindUserByUsernameOrEmail(string usernameOrEmail)
     {
-      UserEntity user = await _authService.FindUserByUsernameOrEmail(usernameOrEmail)
-        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"User not found with user username or email \"{usernameOrEmail}\"");
+      UserEntity user = await _authService.FindUserByUsernameOrEmail(usernameOrEmail);
 
       return Ok(_mapper.Map<UserResponse>(user));
     }

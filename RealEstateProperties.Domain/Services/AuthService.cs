@@ -1,3 +1,5 @@
+using System.Net;
+using RealEstateProperties.Contracts.Exceptions;
 using RealEstateProperties.Contracts.Services;
 using RealEstateProperties.Domain.Entities.Auth;
 using RealEstateProperties.Domain.Helpers;
@@ -23,10 +25,22 @@ namespace RealEstateProperties.Domain.Services
       return addUser;
     }
 
-    public Task<UserEntity?> FindUserById(Guid userId) => Task.FromResult(_userRepository.Find([userId]));
+    public Task<UserEntity> FindUserById(Guid userId)
+    {
+      UserEntity user = _userRepository.Find([userId])
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"User not found with user identifier \"{userId}\"");
 
-    public async Task<UserEntity?> FindUserByUsernameOrEmail(string usernameOrEmail)
-      => await GetUsers().FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Username, usernameOrEmail) || StringCommonHelper.IsStringEquivalent(user.Email, usernameOrEmail));
+      return Task.FromResult(user);
+    }
+
+    public async Task<UserEntity> FindUserByUsernameOrEmail(string usernameOrEmail)
+    {
+      UserEntity user = await GetUsers()
+        .FirstOrDefaultAsync(user => StringCommonHelper.IsStringEquivalent(user.Username, usernameOrEmail) || StringCommonHelper.IsStringEquivalent(user.Email, usernameOrEmail))
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"User not found with user username or email \"{usernameOrEmail}\"");
+
+      return user;
+    }
 
     public async Task<bool> UserExists(string documentNumber, string username)
       => await GetUsers().AnyAsync(user => StringCommonHelper.IsStringEquivalent(user.DocumentNumber, documentNumber) || StringCommonHelper.IsStringEquivalent(user.Username, username));
