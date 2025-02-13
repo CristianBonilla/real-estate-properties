@@ -38,6 +38,7 @@ namespace RealEstateProperties.API.Controllers
 
     [HttpGet("traces/{propertyId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<PropertyTraceResponse>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async IAsyncEnumerable<PropertyTraceResponse> GetTracesByPropertyId(Guid propertyId)
     {
@@ -48,14 +49,25 @@ namespace RealEstateProperties.API.Controllers
 
     [HttpGet("images/{propertyId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetImagesByPropertyId(Guid propertyId)
     {
-      var propertyImages = await _propertiesService.GetImagesByPropertyId(propertyId)
-        .ToArrayAsync();
-      if (propertyImages.Length == 0)
-        throw new ServiceErrorException(HttpStatusCode.NotFound, $"Property images not found with property identifier \"{propertyId}\"");
+      var (propertyName, propertyImages) = _propertiesService.GetImagesByPropertyId(propertyId);
+      int length = propertyImages.Count();
+      if (length == 1)
+        return StatusCode(StatusCodes.Status400BadRequest, $"There are no images to process");
       using MemoryStream memoryStream = new();
+      if (length == 1)
+      {
+        PropertyImageEntity propertyImage = propertyImages.First();
+        await memoryStream.WriteAsync(propertyImage.Image.AsMemory(0, propertyImage.Image.Length));
+        memoryStream.Seek(0, SeekOrigin.Begin);
+        byte[] imageBytes = memoryStream.ToArray();
+
+        return File(imageBytes, "application/octet-stream", propertyImage.ImageName);
+      }
       using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create, true))
       {
         foreach (PropertyImageEntity propertyImage in propertyImages)
@@ -65,11 +77,12 @@ namespace RealEstateProperties.API.Controllers
           await stream.WriteAsync(propertyImage.Image.AsMemory(0, propertyImage.Image.Length));
         }
       }
-      string date = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
-      string zipName = $"{propertyId}__{date}.zip";
       memoryStream.Seek(0, SeekOrigin.Begin);
+      byte[] zipBytes = memoryStream.ToArray();
+      string date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt");
+      string zipName = $"{propertyName} {date}.zip";
 
-      return File(memoryStream.ToArray(), "application/zip", zipName);
+      return File(zipBytes, "application/zip", zipName);
     }
   }
 }
