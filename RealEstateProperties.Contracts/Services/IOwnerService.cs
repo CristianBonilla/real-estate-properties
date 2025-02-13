@@ -6,7 +6,7 @@ namespace RealEstateProperties.Contracts.Services
   {
     Task<OwnerEntity> AddOwner(OwnerEntity owner);
     Task<OwnerEntity> AddOrUpdateOwnerPhoto(Guid ownerId, byte[] photo, string photoName);
-    Task<OwnerEntity?> FindOwnerById(Guid ownerId);
+    Task<OwnerEntity> FindOwnerById(Guid ownerId);
     IAsyncEnumerable<OwnerEntity> GetOwners();
   }
 }

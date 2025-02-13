@@ -1,4 +1,3 @@
-using System.Net;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateProperties.API.Filters;
 using RealEstateProperties.Contracts.DTO.Owner;
-using RealEstateProperties.Contracts.Exceptions;
 using RealEstateProperties.Contracts.Services;
 using RealEstateProperties.Domain.Entities;
 
@@ -51,19 +49,19 @@ namespace RealEstateProperties.API.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> FindOwnerById(Guid ownerId)
     {
-      OwnerEntity owner = await _ownerService.FindOwnerById(ownerId)
-        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
+      OwnerEntity owner = await _ownerService.FindOwnerById(ownerId);
 
       return Ok(_mapper.Map<OwnerResponse>(owner));
     }
 
     [HttpPut("photo/{ownerId}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddOrUpdateOwnerPhoto(Guid ownerId, IFormFile photo)
     {
       if (photo.Length <= 0)
-        throw new ServiceErrorException(HttpStatusCode.BadRequest, "There is no owner photo to process");
+        return StatusCode(StatusCodes.Status400BadRequest, "There is no image to process");
       using MemoryStream memoryStream = new();
       await photo.CopyToAsync(memoryStream);
       byte[] photoBytes = memoryStream.ToArray();
