@@ -13,10 +13,10 @@ namespace RealEstateProperties.Domain.Services
 
     public async Task<OwnerEntity> AddOwner(OwnerEntity owner)
     {
-      OwnerEntity addOwner = _ownerRepository.Create(owner);
+      OwnerEntity addedOwner = _ownerRepository.Create(owner);
       _ = await _context.SaveAsync();
 
-      return addOwner;
+      return addedOwner;
     }
 
     public async Task<OwnerEntity> AddOrUpdateOwnerPhoto(Guid ownerId, byte[] photo, string photoName)
