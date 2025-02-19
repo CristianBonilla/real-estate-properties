@@ -52,7 +52,8 @@ namespace RealEstateProperties.API.Identity
     private AuthResult GenerateAuthForUser(UserEntity user)
     {
       JwtSecurityTokenHandler tokenHandler = new();
-      byte[] key = Encoding.UTF8.GetBytes(_jwtOptions.Secret);
+      string secret = Convert.ToHexStringLower(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
+      byte[] key = Encoding.UTF8.GetBytes(secret);
       SecurityTokenDescriptor tokenDescriptor = new()
       {
         Subject = new([
