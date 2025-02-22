@@ -88,7 +88,7 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
     public void Configure(EntityTypeBuilder<PropertyImageEntity> builder)
     {
       builder.ToTable("PropertyImage", "dbo")
-        .HasKey(key => key.PropertyId);
+        .HasKey(key => key.PropertyImageId);
       builder.Property(property => property.PropertyImageId)
         .HasDefaultValueSql("NEWID()");
       builder.Property(property => property.Image)
