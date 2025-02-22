@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		.gitignore = .gitignore
 		LICENSE = LICENSE
 		README.md = README.md
+		Scripts\realestate-properties-1_changepkpropertyimage-script.sql = Scripts\realestate-properties-1_changepkpropertyimage-script.sql
 		Scripts\realestate-properties-script.sql = Scripts\realestate-properties-script.sql
 	EndProjectSection
 EndProject
