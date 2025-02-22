@@ -93,7 +93,7 @@ namespace RealEstateProperties.API.Controllers
     {
       var (propertyName, propertyImages) = _propertiesService.GetImagesByPropertyId(propertyId);
       int length = propertyImages.Count();
-      if (length == 1)
+      if (length == 0)
         return StatusCode(StatusCodes.Status400BadRequest, $"There are no images to process");
       using MemoryStream memoryStream = new();
       if (length == 1)
@@ -103,7 +103,7 @@ namespace RealEstateProperties.API.Controllers
         memoryStream.Seek(0, SeekOrigin.Begin);
         byte[] imageBytes = memoryStream.ToArray();
 
-        return File(imageBytes, "application/octet-stream", propertyImage.ImageName);
+        return File(imageBytes, "application/octet-stream", $"{propertyName} {propertyImage.ImageName}");
       }
       using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create, true))
       {
@@ -131,12 +131,41 @@ namespace RealEstateProperties.API.Controllers
     {
       if (image.Length <= 0)
         return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
-      using MemoryStream memoryStream = new();
-      await image.CopyToAsync(memoryStream);
-      byte[] imageBytes = memoryStream.ToArray();
+      byte[] imageBytes = await GetImageBytes(image);
       _ = await _propertiesService.AddPropertyImage(propertyId, imageBytes, image.FileName);
 
       return File(imageBytes, "application/octect-stream", image.FileName);
+    }
+
+    [HttpPut("images")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(FileContentResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdatePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId, IFormFile image)
+    {
+      if (image.Length <= 0)
+        return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
+      byte[] imageBytes = await GetImageBytes(image);
+      _ = await _propertiesService.UpdatePropertyImage(propertyId, propertyImageId, imageBytes, image.FileName);
+
+      return File(imageBytes, "application/octect-stream", image.FileName);
+    }
+
+    [HttpDelete("images")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(FileContentResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeletePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId)
+    {
+      PropertyImageEntity propertyImage = await _propertiesService.DeletePropertyImage(propertyId, propertyImageId);
+      using MemoryStream memoryStream = new(propertyImage.Image);
+      await memoryStream.WriteAsync(propertyImage.Image.AsMemory(0, propertyImage.Image.Length));
+      memoryStream.Seek(0, SeekOrigin.Begin);
+      byte[] imageBytes = memoryStream.ToArray();
+
+      return File(imageBytes, "application/octet-stream", propertyImage.ImageName);
     }
 
     [HttpPost("traces")]
@@ -182,6 +211,15 @@ namespace RealEstateProperties.API.Controllers
         .ToArrayAsync();
 
       return propertyTraces;
+    }
+
+    private static async Task<byte[]> GetImageBytes(IFormFile image)
+    {
+      using MemoryStream memoryStream = new();
+      await image.CopyToAsync(memoryStream);
+      byte[] imageBytes = memoryStream.ToArray();
+
+      return imageBytes;
     }
   }
 }
