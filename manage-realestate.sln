@@ -8,9 +8,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		LICENSE = LICENSE
-		Scripts\1.1. realestate-properties-changepkpropertyimage-script.sql = Scripts\1.1. realestate-properties-changepkpropertyimage-script.sql
 		Scripts\1.0. realestate-properties-script.sql = Scripts\1.0. realestate-properties-script.sql
+		Scripts\1.1. realestate-properties-changedpkpropertyimage-script.sql = Scripts\1.1. realestate-properties-changedpkpropertyimage-script.sql
+		Scripts\1.2. realestate-properties-changedpropertiesprecision-script.sql = Scripts\1.2. realestate-properties-changedpropertiesprecision-script.sql
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
