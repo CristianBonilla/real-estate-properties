@@ -22,18 +22,6 @@ namespace RealEstateProperties.API.Controllers
     readonly IMapper _mapper = mapper;
     readonly IPropertiesService _propertiesService = propertiesService;
 
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<PropertiesResult>))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IAsyncEnumerable<PropertiesResult> GetProperties()
-      => _mapper.Map<IAsyncEnumerable<PropertiesResult>>(_propertiesService.GetProperties());
-
-    [HttpGet("{text}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<PropertiesResult>))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IAsyncEnumerable<PropertiesResult> GetProperties(string text)
-      => _mapper.Map<IAsyncEnumerable<PropertiesResult>>(_propertiesService.GetProperties(text));
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PropertyResponse))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -52,12 +40,35 @@ namespace RealEstateProperties.API.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateProperty(Guid propertyId, [FromBody] PropertyRequest propertyRequest)
     {
-      PropertyEntity propertyFound = await _propertiesService.FindPropertyById(propertyId);
-      PropertyEntity property = _mapper.Map(propertyRequest, propertyFound);
-      PropertyResponse propertyResponse = await UpdateProperty(propertyId, property);
+      PropertyEntity property = await _propertiesService.FindPropertyById(propertyId);
+      PropertyEntity updatedProperty = _mapper.Map(propertyRequest, property);
+      PropertyResponse propertyResponse = await UpdateProperty(propertyId, updatedProperty);
 
       return Ok(propertyResponse);
     }
+
+    [HttpDelete("{propertyId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteProperty(Guid propertyId)
+    {
+      PropertyEntity property = await _propertiesService.DeleteProperty(propertyId);
+
+      return Ok(_mapper.Map<PropertyResponse>(property));
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<PropertiesResult>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IAsyncEnumerable<PropertiesResult> GetProperties()
+      => _mapper.Map<IAsyncEnumerable<PropertiesResult>>(_propertiesService.GetProperties());
+
+    [HttpGet("{text}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<PropertiesResult>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IAsyncEnumerable<PropertiesResult> GetProperties(string text)
+      => _mapper.Map<IAsyncEnumerable<PropertiesResult>>(_propertiesService.GetProperties(text));
 
     [HttpPut("price/{propertyId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyResponse))]
@@ -72,38 +83,69 @@ namespace RealEstateProperties.API.Controllers
       return Ok(propertyResponse);
     }
 
-    [HttpDelete("{propertyId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyResponse))]
+    [HttpPost("images/{propertyId}")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PropertyImageResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteProperty(Guid propertyId)
+    public async Task<IActionResult> AddPropertyImage(Guid propertyId, IFormFile image)
     {
-      PropertyEntity deletedProperty = await _propertiesService.DeleteProperty(propertyId);
-      PropertyResponse property = _mapper.Map<PropertyResponse>(deletedProperty);
+      if (image.Length <= 0)
+        return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
+      byte[] imageBytes = await GetImageBytes(image);
+      PropertyImageEntity propertyImage = await _propertiesService.AddPropertyImage(propertyId, imageBytes, image.FileName);
+      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
 
-      return Ok(property);
+      return CreatedAtAction(nameof(AddPropertyImage), propertyImageResponse);
+    }
+
+    [HttpPut("images")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyImageResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdatePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId, IFormFile image)
+    {
+      if (image.Length <= 0)
+        return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
+      byte[] imageBytes = await GetImageBytes(image);
+      PropertyImageEntity propertyImage = await _propertiesService.UpdatePropertyImage(propertyId, propertyImageId, imageBytes, image.FileName);
+      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
+
+      return Ok(propertyImageResponse);
+    }
+
+    [HttpDelete("images")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyImageResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeletePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId)
+    {
+      PropertyImageEntity propertyImage = await _propertiesService.DeletePropertyImage(propertyId, propertyImageId);
+      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
+
+      return Ok(propertyImageResponse);
     }
 
     [HttpGet("images/{propertyId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PropertyImageResponse>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult GetImagesByPropertyId(Guid propertyId)
+    public IActionResult GetPropertyImages(Guid propertyId)
     {
-      var (_, propertyImages) = _propertiesService.GetImagesByPropertyId(propertyId);
+      var (_, propertyImages) = _propertiesService.GetPropertyImages(propertyId);
 
       return Ok(propertyImages.Select(_mapper.Map<PropertyImageResponse>));
     }
 
     [HttpGet("images/{propertyId}/files")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetImagesFilesByPropertyId(Guid propertyId)
+    public async Task<IActionResult> GetPropertyImagesFiles(Guid propertyId)
     {
-      var (propertyName, propertyImages) = _propertiesService.GetImagesByPropertyId(propertyId);
+      var (propertyName, propertyImages) = _propertiesService.GetPropertyImages(propertyId);
       int length = propertyImages.Count();
       if (length == 1)
         return StatusCode(StatusCodes.Status400BadRequest, $"There are no images to process");
@@ -131,55 +173,9 @@ namespace RealEstateProperties.API.Controllers
       return File(zipBytes, "application/zip", zipName);
     }
 
-    [HttpPost("images/{propertyId}")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PropertyImageResponse))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AddPropertyImage(Guid propertyId, IFormFile image)
-    {
-      if (image.Length <= 0)
-        return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
-      byte[] imageBytes = await GetImageBytes(image);
-      PropertyImageEntity propertyImage = await _propertiesService.AddPropertyImage(propertyId, imageBytes, image.FileName);
-      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
-
-      return CreatedAtAction(nameof(AddPropertyImage), propertyImageResponse);
-    }
-
-    [HttpPut("images")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyImageResponse))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdatePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId, IFormFile image)
-    {
-      if (image.Length <= 0)
-        return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
-      byte[] imageBytes = await GetImageBytes(image);
-      PropertyImageEntity propertyImage = await _propertiesService.UpdatePropertyImage(propertyId, propertyImageId, imageBytes, image.FileName);
-      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
-
-      return Ok(propertyImageResponse);
-    }
-
-    [HttpDelete("images")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyImageResponse))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeletePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId)
-    {
-      PropertyImageEntity propertyImage = await _propertiesService.DeletePropertyImage(propertyId, propertyImageId);
-      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
-
-      return Ok(propertyImageResponse);
-    }
-
     [HttpPost("traces")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PropertyTraceResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddPropertyTrace([FromBody] PropertyTraceRequest propertyTraceRequest)
     {
@@ -194,9 +190,11 @@ namespace RealEstateProperties.API.Controllers
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PropertyTraceResponse>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetTracesByPropertyId(Guid propertyId)
+    public async Task<IActionResult> GetPropertyTraces(Guid propertyId)
     {
-      var propertyTraces = await GetPropertyTraces(propertyId);
+      var propertyTraces = await _propertiesService.GetPropertyTraces(propertyId)
+        .Select(_mapper.Map<PropertyTraceResponse>)
+        .ToArrayAsync();
 
       return Ok(propertyTraces);
     }
@@ -205,20 +203,20 @@ namespace RealEstateProperties.API.Controllers
     {
       PropertyEntity updatedProperty = await _propertiesService.UpdateProperty(propertyId, property);
       PropertyResponse propertyResponse = _mapper.Map<PropertyResponse>(updatedProperty);
-      propertyResponse.PropertyTraces = await _propertiesService.GetTracesByPropertyId(propertyId)
+      propertyResponse.PropertyTraces = await _propertiesService.GetPropertyTraces(propertyId)
         .Select(_mapper.Map<PropertyTraceResponse>)
         .ToArrayAsync();
 
       return propertyResponse;
     }
 
-    private async Task<IEnumerable<PropertyTraceResponse>> GetPropertyTraces(Guid propertyId)
+    private static async Task<byte[]> GetImageBytes(IFormFile image)
     {
-      var propertyTraces = await _propertiesService.GetTracesByPropertyId(propertyId)
-        .Select(_mapper.Map<PropertyTraceResponse>)
-        .ToArrayAsync();
+      using MemoryStream memoryStream = new();
+      await image.CopyToAsync(memoryStream);
+      byte[] imageBytes = memoryStream.ToArray();
 
-      return propertyTraces;
+      return imageBytes;
     }
   }
 }

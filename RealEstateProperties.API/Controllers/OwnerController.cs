@@ -21,16 +21,6 @@ namespace RealEstateProperties.API.Controllers
     readonly IMapper _mapper = mapper;
     readonly IOwnerService _ownerService = ownerService;
 
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<OwnerResponse>))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async IAsyncEnumerable<OwnerResponse> GetOwners()
-    {
-      var owners = _ownerService.GetOwners();
-      await foreach (OwnerEntity owner in owners)
-        yield return _mapper.Map<OwnerResponse>(owner);
-    }
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OwnerResponse))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -41,6 +31,27 @@ namespace RealEstateProperties.API.Controllers
       OwnerResponse ownerResponse = _mapper.Map<OwnerResponse>(addedOwner);
 
       return CreatedAtAction(nameof(AddOwner), ownerResponse);
+    }
+
+    [HttpDelete("{ownerId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OwnerResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteOwner(Guid ownerId)
+    {
+      OwnerEntity owner = await _ownerService.DeleteOwner(ownerId);
+
+      return Ok(_mapper.Map<OwnerResponse>(owner));
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IAsyncEnumerable<OwnerResponse>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async IAsyncEnumerable<OwnerResponse> GetOwners()
+    {
+      var owners = _ownerService.GetOwners();
+      await foreach (OwnerEntity owner in owners)
+        yield return _mapper.Map<OwnerResponse>(owner);
     }
 
     [HttpGet("{ownerId}")]
@@ -54,20 +65,43 @@ namespace RealEstateProperties.API.Controllers
       return Ok(_mapper.Map<OwnerResponse>(owner));
     }
 
-    [HttpPut("photo/{ownerId}")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [HttpPost("photo/{ownerId}")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OwnerResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddOrUpdateOwnerPhoto(Guid ownerId, IFormFile photo)
     {
       if (photo.Length <= 0)
         return StatusCode(StatusCodes.Status400BadRequest, "There is no owner photo to process");
-      using MemoryStream memoryStream = new();
-      await photo.CopyToAsync(memoryStream);
-      byte[] photoBytes = memoryStream.ToArray();
-      _ = await _ownerService.AddOrUpdateOwnerPhoto(ownerId, photoBytes, photo.FileName);
+      byte[] photoBytes = await GetImageBytes(photo);
+      OwnerEntity owner = await _ownerService.AddOrUpdateOwnerPhoto(ownerId, photoBytes, photo.FileName);
+      OwnerResponse ownerResponse = _mapper.Map<OwnerResponse>(owner);
 
-      return File(photoBytes, "application/octet-stream", photo.FileName);
+      return CreatedAtAction(nameof(AddOrUpdateOwnerPhoto), ownerResponse);
+    }
+
+    [HttpGet("photo/{ownerId}/file")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetOwnerPhotoFile(Guid ownerId)
+    {
+      OwnerEntity owner = await _ownerService.FindOwnerById(ownerId);
+      if (owner.Photo is null)
+        return StatusCode(StatusCodes.Status400BadRequest, "There is no owner photo to process");
+
+      return File(owner.Photo, "application/octect-stream", owner.PhotoName);
+    }
+
+    private static async Task<byte[]> GetImageBytes(IFormFile image)
+    {
+      using MemoryStream memoryStream = new();
+      await image.CopyToAsync(memoryStream);
+      byte[] imageBytes = memoryStream.ToArray();
+
+      return imageBytes;
     }
   }
 }
