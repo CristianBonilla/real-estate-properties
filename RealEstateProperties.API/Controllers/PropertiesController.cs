@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -93,7 +92,7 @@ namespace RealEstateProperties.API.Controllers
     {
       if (image.Length <= 0)
         return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
-      byte[] imageBytes = await PropertyImageStreamUtil.GetImageBytes(image);
+      byte[] imageBytes = await ImageStreamUtils.GetImageBytes(image);
       PropertyImageEntity propertyImage = await _propertiesService.AddPropertyImage(propertyId, imageBytes, image.FileName);
       PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
 
@@ -109,7 +108,7 @@ namespace RealEstateProperties.API.Controllers
     {
       if (image.Length <= 0)
         return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
-      byte[] imageBytes = await PropertyImageStreamUtil.GetImageBytes(image);
+      byte[] imageBytes = await ImageStreamUtils.GetImageBytes(image);
       PropertyImageEntity propertyImage = await _propertiesService.UpdatePropertyImage(propertyId, propertyImageId, imageBytes, image.FileName);
       PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
 
@@ -147,31 +146,10 @@ namespace RealEstateProperties.API.Controllers
     public async Task<IActionResult> GetPropertyImagesFiles(Guid propertyId)
     {
       var (propertyName, propertyImages) = _propertiesService.GetPropertyImages(propertyId);
-      int length = propertyImages.Count();
-      if (length == 1)
-        return StatusCode(StatusCodes.Status400BadRequest, $"There are no images to process");
-      if (length == 1)
-      {
-        PropertyImageEntity propertyImage = propertyImages.Single();
+      if (await ImageStreamUtils.GetImagesBytes(propertyName, propertyImages) is var (imageBytes, contentType, imageName))
+        return File(imageBytes, contentType, imageName);
 
-        return File(propertyImage.Image, "application/octet-stream", $"{propertyName} {propertyImage.ImageName}");
-      }
-      using MemoryStream memoryStream = new();
-      using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create, true))
-      {
-        foreach (PropertyImageEntity propertyImage in propertyImages)
-        {
-          ZipArchiveEntry entry = zip.CreateEntry(propertyImage.ImageName, CompressionLevel.Fastest);
-          using Stream stream = entry.Open();
-          await stream.WriteAsync(propertyImage.Image.AsMemory(0, propertyImage.Image.Length));
-        }
-      }
-      memoryStream.Seek(0, SeekOrigin.Begin);
-      byte[] zipBytes = memoryStream.ToArray();
-      string date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt");
-      string zipName = $"{propertyName} {date}.zip";
-
-      return File(zipBytes, "application/zip", zipName);
+      return StatusCode(StatusCodes.Status400BadRequest, $"There are no images to process");
     }
 
     [HttpPost("traces")]

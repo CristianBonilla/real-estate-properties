@@ -75,7 +75,7 @@ namespace RealEstateProperties.API.Controllers
     {
       if (photo.Length <= 0)
         return StatusCode(StatusCodes.Status400BadRequest, "There is no owner photo to process");
-      byte[] photoBytes = await PropertyImageStreamUtil.GetImageBytes(photo);
+      byte[] photoBytes = await ImageStreamUtils.GetImageBytes(photo);
       OwnerEntity owner = await _ownerService.AddOrUpdateOwnerPhoto(ownerId, photoBytes, photo.FileName);
       OwnerResponse ownerResponse = _mapper.Map<OwnerResponse>(owner);
 
