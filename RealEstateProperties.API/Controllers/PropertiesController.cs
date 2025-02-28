@@ -85,26 +85,35 @@ namespace RealEstateProperties.API.Controllers
     }
 
     [HttpGet("images/{propertyId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PropertyImageResponse>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetImagesByPropertyId(Guid propertyId)
+    {
+      var (_, propertyImages) = _propertiesService.GetImagesByPropertyId(propertyId);
+
+      return Ok(propertyImages.Select(_mapper.Map<PropertyImageResponse>));
+    }
+
+    [HttpGet("images/{propertyId}/files")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetImagesByPropertyId(Guid propertyId)
+    public async Task<IActionResult> GetImagesFilesByPropertyId(Guid propertyId)
     {
       var (propertyName, propertyImages) = _propertiesService.GetImagesByPropertyId(propertyId);
       int length = propertyImages.Count();
       if (length == 1)
         return StatusCode(StatusCodes.Status400BadRequest, $"There are no images to process");
-      using MemoryStream memoryStream = new();
       if (length == 1)
       {
-        PropertyImageEntity propertyImage = propertyImages.First();
-        await memoryStream.WriteAsync(propertyImage.Image.AsMemory(0, propertyImage.Image.Length));
-        memoryStream.Seek(0, SeekOrigin.Begin);
-        byte[] imageBytes = memoryStream.ToArray();
+        PropertyImageEntity propertyImage = propertyImages.Single();
 
-        return File(imageBytes, "application/octet-stream", propertyImage.ImageName);
+        return File(propertyImage.Image, "application/octet-stream", $"{propertyName} {propertyImage.ImageName}");
       }
+      using MemoryStream memoryStream = new();
       using (ZipArchive zip = new(memoryStream, ZipArchiveMode.Create, true))
       {
         foreach (PropertyImageEntity propertyImage in propertyImages)
@@ -123,7 +132,7 @@ namespace RealEstateProperties.API.Controllers
     }
 
     [HttpPost("images/{propertyId}")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(FileContentResult))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PropertyImageResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -131,12 +140,40 @@ namespace RealEstateProperties.API.Controllers
     {
       if (image.Length <= 0)
         return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
-      using MemoryStream memoryStream = new();
-      await image.CopyToAsync(memoryStream);
-      byte[] imageBytes = memoryStream.ToArray();
-      _ = await _propertiesService.AddPropertyImage(propertyId, imageBytes, image.FileName);
+      byte[] imageBytes = await GetImageBytes(image);
+      PropertyImageEntity propertyImage = await _propertiesService.AddPropertyImage(propertyId, imageBytes, image.FileName);
+      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
 
-      return File(imageBytes, "application/octect-stream", image.FileName);
+      return CreatedAtAction(nameof(AddPropertyImage), propertyImageResponse);
+    }
+
+    [HttpPut("images")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyImageResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdatePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId, IFormFile image)
+    {
+      if (image.Length <= 0)
+        return StatusCode(StatusCodes.Status400BadRequest, "There is no property image to process");
+      byte[] imageBytes = await GetImageBytes(image);
+      PropertyImageEntity propertyImage = await _propertiesService.UpdatePropertyImage(propertyId, propertyImageId, imageBytes, image.FileName);
+      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
+
+      return Ok(propertyImageResponse);
+    }
+
+    [HttpDelete("images")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PropertyImageResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeletePropertyImage([FromQuery] Guid propertyId, [FromQuery] Guid propertyImageId)
+    {
+      PropertyImageEntity propertyImage = await _propertiesService.DeletePropertyImage(propertyId, propertyImageId);
+      PropertyImageResponse propertyImageResponse = _mapper.Map<PropertyImageResponse>(propertyImage);
+
+      return Ok(propertyImageResponse);
     }
 
     [HttpPost("traces")]
