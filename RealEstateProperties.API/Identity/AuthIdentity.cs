@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using Newtonsoft.Json;
@@ -52,8 +51,7 @@ namespace RealEstateProperties.API.Identity
     private AuthResult GenerateAuthForUser(UserEntity user)
     {
       JwtSecurityTokenHandler tokenHandler = new();
-      string secret = Convert.ToHexStringLower(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
-      byte[] key = Encoding.UTF8.GetBytes(secret);
+      byte[] secretKey = JwtSigningKeyHelper.GetSecretKey(_jwtOptions.Secret);
       SecurityTokenDescriptor tokenDescriptor = new()
       {
         Subject = new([
@@ -65,7 +63,7 @@ namespace RealEstateProperties.API.Identity
           new(ClaimTypes.UserData, UserToJson(user))
         ]),
         Expires = DateTime.UtcNow.AddDays(_jwtOptions.ExpiresInDays),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha512Signature)
       };
       SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 

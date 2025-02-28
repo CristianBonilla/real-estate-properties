@@ -1,7 +1,7 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using RealEstateProperties.API.Options;
+using RealEstateProperties.Domain.Helpers;
 
 namespace RealEstateProperties.API.Installers
 {
@@ -13,7 +13,7 @@ namespace RealEstateProperties.API.Installers
       services.Configure<JwtOptions>(jwtSection);
       JwtOptions jwtOptions = jwtSection.Get<JwtOptions>()!;
       services.AddSingleton(jwtOptions);
-      byte[] key = Encoding.UTF8.GetBytes(jwtOptions.Secret);
+      byte[] secretKey = JwtSigningKeyHelper.GetSecretKey(jwtOptions.Secret);
       services.AddAuthentication(auth =>
       {
         auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -27,7 +27,7 @@ namespace RealEstateProperties.API.Installers
         jwt.TokenValidationParameters = new()
         {
           ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(key),
+          IssuerSigningKey = new SymmetricSecurityKey(secretKey),
           ValidateIssuer = false,
           ValidateAudience = false,
           RequireExpirationTime = false,
