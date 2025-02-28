@@ -57,7 +57,7 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
         .IsUnicode()
         .IsRequired();
       builder.Property(property => property.Price)
-        .HasPrecision(12, 2)
+        .HasPrecision(14, 2)
         .IsRequired();
       builder.Property(property => property.CodeInternal)
         .IsRequired();
@@ -123,10 +123,10 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
         .IsUnicode(false)
         .IsRequired();
       builder.Property(property => property.Value)
-        .HasPrecision(12, 2)
+        .HasPrecision(14, 2)
         .IsRequired();
       builder.Property(property => property.Tax)
-        .HasPrecision(12, 2)
+        .HasPrecision(14, 2)
         .IsRequired();
       builder.Property(property => property.DateSale)
         .IsRequired();
