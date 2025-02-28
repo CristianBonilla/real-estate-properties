@@ -5,8 +5,8 @@ namespace RealEstateProperties.Contracts.Identity
 {
   public interface IAuthIdentity
   {
+    Task<AuthResult> Register(UserRegisterRequest userRegisterRequest);
     Task<AuthResult> Login(UserLoginRequest userLoginRequest);
-    Task<AuthResult> Register(UserRegisterRequest user);
     Task<bool> UserExists(UserRegisterRequest user);
   }
 }

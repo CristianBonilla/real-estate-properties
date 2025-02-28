@@ -25,16 +25,6 @@ namespace RealEstateProperties.API.Identity
     readonly IAuthService _authService = authService;
     readonly JwtOptions _jwtOptions = jwtOptions;
 
-    public async Task<AuthResult> Login(UserLoginRequest userLoginRequest)
-    {
-      UserEntity user = await _authService.FindUserByUsernameOrEmail(userLoginRequest.UsernameOrEmail);
-      bool userValidPassoword = HashPasswordHelper.Verify(userLoginRequest.Password, user.Password, user.Salt);
-      if (!userValidPassoword)
-        throw new ServiceErrorException(HttpStatusCode.Unauthorized, $"User password is invalid \"{userLoginRequest.Password}\"");
-
-      return GenerateAuthForUser(user);
-    }
-
     public async Task<AuthResult> Register(UserRegisterRequest userRegisterRequest)
     {
       bool existingUser = await UserExists(userRegisterRequest);
@@ -44,6 +34,16 @@ namespace RealEstateProperties.API.Identity
       UserEntity addedUser = await _authService.AddUser(user);
 
       return GenerateAuthForUser(addedUser);
+    }
+
+    public async Task<AuthResult> Login(UserLoginRequest userLoginRequest)
+    {
+      UserEntity user = await _authService.FindUserByUsernameOrEmail(userLoginRequest.UsernameOrEmail);
+      bool userValidPassoword = HashPasswordHelper.Verify(userLoginRequest.Password, user.Password, user.Salt);
+      if (!userValidPassoword)
+        throw new ServiceErrorException(HttpStatusCode.Unauthorized, $"User password is invalid \"{userLoginRequest.Password}\"");
+
+      return GenerateAuthForUser(user);
     }
 
     public async Task<bool> UserExists(UserRegisterRequest userRegisterRequest) => await _authService.UserExists(userRegisterRequest.DocumentNumber, userRegisterRequest.Username);
