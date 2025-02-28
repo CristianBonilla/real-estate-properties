@@ -50,54 +50,6 @@ namespace RealEstateProperties.Domain.Services
       return deletedProperty;
     }
 
-    public Task<PropertyEntity> FindPropertyById(Guid propertyId) => Task.FromResult(GetProperty(propertyId));
-
-    public async Task<PropertyImageEntity> AddPropertyImage(Guid propertyId, byte[] image, string imageName)
-    {
-      CheckPropertyExists(propertyId);
-      PropertyImageEntity propertyImage = new()
-      {
-        PropertyId = propertyId,
-        Enabled = true,
-        Image = image,
-        ImageName = imageName
-      };
-      PropertyImageEntity addedPropertyImage = _propertyImageRepository.Create(propertyImage);
-      _ = await _context.SaveAsync();
-
-      return addedPropertyImage;
-    }
-
-    public async Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyId, Guid propertyImageId, byte[] image, string imageName)
-    {
-      PropertyImageEntity propertyImage = GetPropertyImage(propertyId, propertyImageId);
-      propertyImage.Enabled = true;
-      propertyImage.Image = image;
-      propertyImage.ImageName = imageName;
-      PropertyImageEntity updatedPropertyImage = _propertyImageRepository.Update(propertyImage);
-      _ = await _context.SaveAsync();
-
-      return updatedPropertyImage;
-    }
-
-    public async Task<PropertyImageEntity> DeletePropertyImage(Guid propertyId, Guid propertyImageId)
-    {
-      PropertyImageEntity propertyImage = GetPropertyImage(propertyId, propertyImageId);
-      propertyImage = _propertyImageRepository.Delete(propertyImage);
-      _ = await _context.SaveAsync();
-
-      return propertyImage;
-    }
-
-    public async Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace)
-    {
-      CheckPropertyExists(propertyTrace.PropertyId);
-      PropertyTraceEntity addPropertyTrace = _propertyTraceRepository.Create(propertyTrace);
-      _ = await _context.SaveAsync();
-
-      return addPropertyTrace;
-    }
-
     public IAsyncEnumerable<(OwnerEntity Owner, PropertyEntity? Property, PropertyTraceEntity? PropertyTrace)> GetProperties()
     {
       var owners = _ownerRepository.GetAll()
@@ -150,7 +102,46 @@ namespace RealEstateProperties.Domain.Services
       }
     }
 
-    public (string PropertyName, IEnumerable<PropertyImageEntity> PropertyImages) GetImagesByPropertyId(Guid propertyId)
+    public Task<PropertyEntity> FindPropertyById(Guid propertyId) => Task.FromResult(GetProperty(propertyId));
+
+    public async Task<PropertyImageEntity> AddPropertyImage(Guid propertyId, byte[] image, string imageName)
+    {
+      CheckPropertyExists(propertyId);
+      PropertyImageEntity propertyImage = new()
+      {
+        PropertyId = propertyId,
+        Enabled = true,
+        Image = image,
+        ImageName = imageName
+      };
+      PropertyImageEntity addedPropertyImage = _propertyImageRepository.Create(propertyImage);
+      _ = await _context.SaveAsync();
+
+      return addedPropertyImage;
+    }
+
+    public async Task<PropertyImageEntity> UpdatePropertyImage(Guid propertyId, Guid propertyImageId, byte[] image, string imageName)
+    {
+      PropertyImageEntity propertyImage = GetPropertyImage(propertyId, propertyImageId);
+      propertyImage.Enabled = true;
+      propertyImage.Image = image;
+      propertyImage.ImageName = imageName;
+      PropertyImageEntity updatedPropertyImage = _propertyImageRepository.Update(propertyImage);
+      _ = await _context.SaveAsync();
+
+      return updatedPropertyImage;
+    }
+
+    public async Task<PropertyImageEntity> DeletePropertyImage(Guid propertyId, Guid propertyImageId)
+    {
+      PropertyImageEntity propertyImage = GetPropertyImage(propertyId, propertyImageId);
+      propertyImage = _propertyImageRepository.Delete(propertyImage);
+      _ = await _context.SaveAsync();
+
+      return propertyImage;
+    }
+
+    public (string PropertyName, IEnumerable<PropertyImageEntity> PropertyImages) GetPropertyImages(Guid propertyId)
     {
       PropertyEntity property = GetProperty(propertyId);
       var propertyImages = _propertyImageRepository.GetByFilter(propertyImage => propertyImage.PropertyId == propertyId);
@@ -158,7 +149,16 @@ namespace RealEstateProperties.Domain.Services
       return (property.Name, propertyImages);
     }
 
-    public IAsyncEnumerable<PropertyTraceEntity> GetTracesByPropertyId(Guid propertyId)
+    public async Task<PropertyTraceEntity> AddPropertyTrace(PropertyTraceEntity propertyTrace)
+    {
+      CheckPropertyExists(propertyTrace.PropertyId);
+      PropertyTraceEntity addPropertyTrace = _propertyTraceRepository.Create(propertyTrace);
+      _ = await _context.SaveAsync();
+
+      return addPropertyTrace;
+    }
+
+    public IAsyncEnumerable<PropertyTraceEntity> GetPropertyTraces(Guid propertyId)
     {
       CheckPropertyExists(propertyId);
       var propertyTraces = _propertyTraceRepository.GetByFilter(propertyTrace => propertyTrace.PropertyId == propertyId)

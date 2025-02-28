@@ -25,6 +25,18 @@ namespace RealEstateProperties.Domain.Services
       return addedUser;
     }
 
+    public async Task<bool> UserExists(string documentNumber, string username)
+      => await GetUsers().AnyAsync(user => StringCommonHelper.IsStringEquivalent(user.DocumentNumber, documentNumber) || StringCommonHelper.IsStringEquivalent(user.Username, username));
+
+    public IAsyncEnumerable<UserEntity> GetUsers()
+    {
+      var users = _userRepository.GetAll(users => users.OrderBy(order => order.Firstname)
+        .ThenBy(order => order.Username))
+        .ToAsyncEnumerable();
+
+      return users;
+    }
+
     public Task<UserEntity> FindUserById(Guid userId)
     {
       UserEntity user = _userRepository.Find([userId])
@@ -40,18 +52,6 @@ namespace RealEstateProperties.Domain.Services
         ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"User not found with user username or email \"{usernameOrEmail}\"");
 
       return user;
-    }
-
-    public async Task<bool> UserExists(string documentNumber, string username)
-      => await GetUsers().AnyAsync(user => StringCommonHelper.IsStringEquivalent(user.DocumentNumber, documentNumber) || StringCommonHelper.IsStringEquivalent(user.Username, username));
-
-    public IAsyncEnumerable<UserEntity> GetUsers()
-    {
-      var users = _userRepository.GetAll(users => users.OrderBy(order => order.Firstname)
-        .ThenBy(order => order.Username))
-        .ToAsyncEnumerable();
-
-      return users;
     }
   }
 }

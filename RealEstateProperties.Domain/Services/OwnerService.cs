@@ -19,24 +19,13 @@ namespace RealEstateProperties.Domain.Services
       return addedOwner;
     }
 
-    public async Task<OwnerEntity> AddOrUpdateOwnerPhoto(Guid ownerId, byte[] photo, string photoName)
+    public async Task<OwnerEntity> DeleteOwner(Guid ownerId)
     {
-      OwnerEntity owner = _ownerRepository.Find([ownerId])
-        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
-      owner.Photo = photo;
-      owner.PhotoName = photoName;
-      OwnerEntity updatedOwner = _ownerRepository.Update(owner);
+      OwnerEntity owner = GetOwner(ownerId);
+      OwnerEntity deletedOwner = _ownerRepository.Delete(owner);
       _ = await _context.SaveAsync();
 
-      return updatedOwner;
-    }
-
-    public Task<OwnerEntity> FindOwnerById(Guid ownerId)
-    {
-      OwnerEntity owner = _ownerRepository.Find([ownerId])
-        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
-
-      return Task.FromResult(owner);
+      return deletedOwner;
     }
 
     public IAsyncEnumerable<OwnerEntity> GetOwners()
@@ -45,6 +34,27 @@ namespace RealEstateProperties.Domain.Services
         .ToAsyncEnumerable();
 
       return owners;
+    }
+
+    public Task<OwnerEntity> FindOwnerById(Guid ownerId) => Task.FromResult(GetOwner(ownerId));
+
+    public async Task<OwnerEntity> AddOrUpdateOwnerPhoto(Guid ownerId, byte[] photo, string photoName)
+    {
+      OwnerEntity owner = GetOwner(ownerId);
+      owner.Photo = photo;
+      owner.PhotoName = photoName;
+      OwnerEntity updatedOwner = _ownerRepository.Update(owner);
+      _ = await _context.SaveAsync();
+
+      return updatedOwner;
+    }
+
+    private OwnerEntity GetOwner(Guid ownerId)
+    {
+      OwnerEntity owner = _ownerRepository.Find([ownerId])
+        ?? throw new ServiceErrorException(HttpStatusCode.NotFound, $"Owner not found with owner identifier \"{ownerId}\"");
+
+      return owner;
     }
   }
 }
