@@ -34,13 +34,13 @@ namespace RealEstateProperties.API.Mappers.Converters
           {
             Owner = mapper.Map<OwnerResponse>(owner),
             Properties = properties
+              .Distinct()
               .GroupJoin(
                 propertyTraces,
                 property => property?.PropertyId,
                 propertyTrace => propertyTrace?.PropertyId,
                 (property, propertyTraces) => GetProperty(mapper, property, propertyTraces))
-          }
-        );
+          });
       foreach (PropertiesResult propertyResult in propertiesResult)
         yield return propertyResult;
     }

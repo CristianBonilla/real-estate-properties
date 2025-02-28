@@ -106,14 +106,16 @@ namespace RealEstateProperties.Domain.Services
           owner => owner.OwnerId,
           property => property.OwnerId,
           (owner, properties) => (owner, properties))
-        .SelectMany(owner => owner.properties.DefaultIfEmpty(),
+        .SelectMany(
+          owner => owner.properties.DefaultIfEmpty(),
           (owner, property) => (owner.owner, property))
         .GroupJoin(
           _propertyTraceRepository.GetAll(),
           owner => owner.property?.PropertyId,
           propertyTrace => propertyTrace.PropertyId,
           (owner, propertyTraces) => (owner.owner, owner.property, propertyTraces))
-        .SelectMany(owner => owner.propertyTraces.DefaultIfEmpty(),
+        .SelectMany(
+          owner => owner.propertyTraces.DefaultIfEmpty(),
           (owner, propertyTrace) => (owner.owner, owner.property, propertyTrace))
         .ToAsyncEnumerable();
 
