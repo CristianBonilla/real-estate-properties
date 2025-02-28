@@ -27,6 +27,7 @@ namespace RealEstateProperties.API.Controllers
     [AllowAnonymous]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AuthResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Register([FromBody] UserRegisterRequest userRegisterRequest)
     {
@@ -38,12 +39,13 @@ namespace RealEstateProperties.API.Controllers
     [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Login([FromBody] UserLoginRequest userLoginRequest)
     {
       AuthResult auth = await _authIdentity.Login(userLoginRequest);
 
-      return CreatedAtAction(nameof(Login), auth);
+      return Ok(auth);
     }
 
     [HttpGet]
