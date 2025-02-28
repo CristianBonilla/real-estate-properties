@@ -53,8 +53,8 @@ namespace RealEstateProperties.Domain.SeedWork.Collections.RealEstateProperties
         PropertyTraceId = new("{e72aa5ce-fb69-46a5-9c66-6900e6728f09}"),
         PropertyId = _properties[4].PropertyId,
         Name = "The Kingfisher Trace",
-        Value = 1122910000,
-        Tax = 8950000,
+        Value = 1122910000M,
+        Tax = 8950000M,
         DateSale = new(2024, 8, 22, 1, 2, 18, TimeSpan.FromHours(3)),
         Created = new(2024, 8, 22, 1, 2, 18, TimeSpan.FromHours(3))
       }
