@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateProperties.API.Filters;
+using RealEstateProperties.API.Utils;
 using RealEstateProperties.Contracts.DTO.Owner;
 using RealEstateProperties.Contracts.Services;
 using RealEstateProperties.Domain.Entities;
@@ -74,7 +75,7 @@ namespace RealEstateProperties.API.Controllers
     {
       if (photo.Length <= 0)
         return StatusCode(StatusCodes.Status400BadRequest, "There is no owner photo to process");
-      byte[] photoBytes = await GetImageBytes(photo);
+      byte[] photoBytes = await PropertyImageStreamUtil.GetImageBytes(photo);
       OwnerEntity owner = await _ownerService.AddOrUpdateOwnerPhoto(ownerId, photoBytes, photo.FileName);
       OwnerResponse ownerResponse = _mapper.Map<OwnerResponse>(owner);
 
@@ -93,15 +94,6 @@ namespace RealEstateProperties.API.Controllers
         return StatusCode(StatusCodes.Status400BadRequest, "There is no owner photo to process");
 
       return File(owner.Photo, "application/octect-stream", owner.PhotoName);
-    }
-
-    private static async Task<byte[]> GetImageBytes(IFormFile image)
-    {
-      using MemoryStream memoryStream = new();
-      await image.CopyToAsync(memoryStream);
-      byte[] imageBytes = memoryStream.ToArray();
-
-      return imageBytes;
     }
   }
 }
