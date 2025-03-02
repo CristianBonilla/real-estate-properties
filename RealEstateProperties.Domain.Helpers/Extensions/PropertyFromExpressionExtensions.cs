@@ -16,7 +16,7 @@ namespace RealEstateProperties.Domain.Helpers.Extensions
       return property;
     }
 
-    public static bool IsPropertyIncluded(this IEnumerable<LambdaExpression> expressions, PropertyInfo property)
+    public static bool IsIncludedProperty(this IEnumerable<LambdaExpression> expressions, PropertyInfo property)
       => expressions.Any(expression => property.Equals(expression.GetProperty()));
   }
 }

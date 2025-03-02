@@ -23,7 +23,7 @@ namespace RealEstateProperties.Domain.Helpers
         object? propertyValue = property.GetValue(obj, null);
         if (propertyValue == null)
           continue;
-        bool isIncluded = includedProperties.IsPropertyIncluded(property);
+        bool isIncluded = includedProperties.IsIncludedProperty(property);
         Type propertyType = property.PropertyType;
         if (propertyType.IsUserDefinedObject())
           return HasMatches(propertyValue, text, IncludedInternalProperties(propertyValue, includedProperties));

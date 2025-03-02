@@ -1,6 +1,6 @@
 namespace RealEstateProperties.Domain.Helpers.Extensions
 {
-  static class EvaluateTypesHelper
+  static class EvaluateTypesExtensions
   {
     const string RealEstateProperties = nameof(RealEstateProperties);
 
