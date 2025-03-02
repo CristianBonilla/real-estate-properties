@@ -31,13 +31,14 @@ namespace RealEstateProperties.API.Mappers
       CreateMap<PropertyEntity, PropertyResponse>()
         .ForMember(member => member.PropertyTraces, options => options.Ignore())
         .ReverseMap()
+        .ForMember(member => member.CodeInternal, options => options.Ignore())
         .ForMember(member => member.Version, options => options.Ignore())
         .ForMember(member => member.Owner, options => options.Ignore())
         .ForMember(member => member.Images, options => options.Ignore())
         .ForMember(member => member.Traces, options => options.Ignore());
-      CreateMap<PropertyImageRequest, PropertyImageEntity>()
-        .ForMember(member => member.PropertyImageId, options => options.Ignore())
-        .ForMember(member => member.Created, options => options.Ignore())
+      CreateMap<PropertyImageEntity, PropertyImageResponse>()
+        .ReverseMap()
+        .ForMember(member => member.Image, options => options.Ignore())
         .ForMember(member => member.Version, options => options.Ignore())
         .ForMember(member => member.Property, options => options.Ignore());
       CreateMap<PropertyTraceRequest, PropertyTraceEntity>()
