@@ -4,7 +4,6 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using RealEstateProperties.API.Options;
 using RealEstateProperties.Contracts.DTO.Auth;
 using RealEstateProperties.Contracts.DTO.User;
@@ -72,9 +71,17 @@ namespace RealEstateProperties.API.Identity
 
     private static string UserToJson(UserEntity user)
     {
-      string userJson = JsonConvert.SerializeObject(user, Formatting.Indented, new JsonSerializerSettings
+      string userJson = JsonConvert.SerializeObject(user, Formatting.None, new JsonSerializerSettings
       {
-        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        ContractResolver = new JsonPropertiesInclusionResolver<UserEntity>(
+          user => user.DocumentNumber,
+          user => user.Mobile,
+          user => user.Username,
+          user => user.Email,
+          user => user.Firstname,
+          user => user.Lastname,
+          user => user.IsActive,
+          user => user.Created),
         DefaultValueHandling = DefaultValueHandling.Ignore,
         NullValueHandling = NullValueHandling.Ignore
       });
