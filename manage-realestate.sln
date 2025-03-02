@@ -8,10 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		Scripts\1.0. realestate-properties-script.sql = Scripts\1.0. realestate-properties-script.sql
-		Scripts\1.1. realestate-properties-changedpkpropertyimage-script.sql = Scripts\1.1. realestate-properties-changedpkpropertyimage-script.sql
-		Scripts\1.2. realestate-properties-changedpropertiesprecision-script.sql = Scripts\1.2. realestate-properties-changedpropertiesprecision-script.sql
-		Scripts\1.3. realestate-properties-addeduniqueindexes-script.sql = Scripts\1.3. realestate-properties-addeduniqueindexes-script.sql
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
@@ -33,6 +29,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateProperties.Domain.Entities", "RealEstateProperties.Domain.Entities\RealEstateProperties.Domain.Entities.csproj", "{E91BA068-1675-47A9-B161-74D23BFF7420}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateProperties.Domain.Helpers", "RealEstateProperties.Domain.Helpers\RealEstateProperties.Domain.Helpers.csproj", "{CDF43769-D848-4A71-B876-3FA6E83C00C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\1.0. realestate-properties-script.sql = Scripts\1.0. realestate-properties-script.sql
+		Scripts\1.1. realestate-properties-changedpkpropertyimage-script.sql = Scripts\1.1. realestate-properties-changedpkpropertyimage-script.sql
+		Scripts\1.2. realestate-properties-changedpropertiesprecision-script.sql = Scripts\1.2. realestate-properties-changedpropertiesprecision-script.sql
+		Scripts\1.3. realestate-properties-addeduniqueindexes-script.sql = Scripts\1.3. realestate-properties-addeduniqueindexes-script.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +82,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A609B54C-EB06-4EFE-8518-DD89B7905181} = {FDBA162B-268B-406D-A7EE-7746A6273D88}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {031A4AFB-7C73-4168-95DE-9AC049744362}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {34D7C2FA-93E4-4DB6-8AF5-CB879B62E9E6}
