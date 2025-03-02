@@ -49,6 +49,7 @@ namespace RealEstateProperties.API.Extensions
         catch (DbException exception) when (exception.InnerException is SocketException socketException && socketException.SocketErrorCode == SocketError.HostNotFound)
         {
           Console.WriteLine("Unidentified or nonexistent DB start connection.");
+          Console.WriteLine(exception.Message);
 
           throw socketException;
         }
