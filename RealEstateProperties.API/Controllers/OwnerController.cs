@@ -66,7 +66,7 @@ namespace RealEstateProperties.API.Controllers
       return Ok(_mapper.Map<OwnerResponse>(owner));
     }
 
-    [HttpPost("photo/{ownerId}")]
+    [HttpPut("photo/{ownerId}")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OwnerResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
