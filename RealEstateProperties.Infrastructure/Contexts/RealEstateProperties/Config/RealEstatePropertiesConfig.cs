@@ -35,6 +35,8 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
         .WithOne(one => one.Owner)
         .HasForeignKey(key => key.OwnerId)
         .OnDelete(DeleteBehavior.Cascade);
+      builder.HasIndex(index => index.Name)
+        .IsUnique();
       if (seedData is not null)
         builder.HasData(seedData.RealEstateProperties.Owners.GetAll());
     }
@@ -78,6 +80,8 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
         .WithOne(one => one.Property)
         .HasForeignKey(key => key.PropertyId)
         .OnDelete(DeleteBehavior.Cascade);
+      builder.HasIndex(index => new { index.Name, index.CodeInternal })
+        .IsUnique();
       if (seedData is not null)
         builder.HasData(seedData.RealEstateProperties.Properties.GetAll());
     }
@@ -105,6 +109,8 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
       builder.HasOne(one => one.Property)
         .WithMany(many => many.Images)
         .HasForeignKey(key => key.PropertyId);
+      builder.HasIndex(index => index.ImageName)
+        .IsUnique();
       if (seedData is not null)
         builder.HasData(seedData.RealEstateProperties.PropertyImages.GetAll());
     }
@@ -137,6 +143,8 @@ namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Conf
       builder.HasOne(one => one.Property)
         .WithMany(many => many.Traces)
         .HasForeignKey(key => key.PropertyId);
+      builder.HasIndex(index => index.Name)
+        .IsUnique();
       if (seedData is not null)
         builder.HasData(seedData.RealEstateProperties.PropertyTraces.GetAll());
     }

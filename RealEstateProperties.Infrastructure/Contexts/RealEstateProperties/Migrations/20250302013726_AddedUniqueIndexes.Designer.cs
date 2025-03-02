@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RealEstateProperties.Infrastructure.Contexts.RealEstateProperties;
 
@@ -11,9 +12,11 @@ using RealEstateProperties.Infrastructure.Contexts.RealEstateProperties;
 namespace RealEstateProperties.Infrastructure.Contexts.RealEstateProperties.Migrations
 {
     [DbContext(typeof(RealEstatePropertiesContext))]
-    partial class RealEstatePropertiesContextModelSnapshot : ModelSnapshot
+    [Migration("20250302013726_AddedUniqueIndexes")]
+    partial class AddedUniqueIndexes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
